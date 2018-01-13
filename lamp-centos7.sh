@@ -37,8 +37,8 @@ while :; do echo
 done
 
 [ ! -e '/etc/yum.repos.d/epel.repo' ] && yum -y install epel-release
-[ ! -e '/usr/bin/wget' ] && yum -y install wget
-[ ! -e '/usr/bin/unzip' ] && yum -y install unzip
+#[ ! -e '/usr/bin/wget' ] && yum -y install wget
+#[ ! -e '/usr/bin/unzip' ] && yum -y install unzip
 rpm -ivh http://rpms.famillecollet.com/enterprise/remi-release-7.rpm
 yum install --enablerepo=remi-php$php_version php php-opcache php-devel php-mbstring php-mcrypt php-mysqlnd php-phpunit-PHPUnit php-bcmath php-gd php-common -y 
 yum install php$php_version -y
@@ -53,7 +53,7 @@ gpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
 gpgcheck=1
 EOF
 	fi
-	for Package in mariadb mariadb-server httpd mod_ssl openssl wget
+	for Package in mariadb mariadb-server httpd mod_ssl openssl wget unzip
 	do
 		yum install $Package -y 
 done	
