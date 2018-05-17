@@ -43,6 +43,8 @@ touch /etc/shadowsocks-libev/config.json
 	"password":"$PWD1",
 	"timeout":60,
 	"method":"aes-256-cfb",
+	 "obfs":"tls",
+        "obfshost":"itunes.apple.com",
 	"plugin":"obfs-server",
 	"plugin_opts":"obfs=http"
 }
@@ -64,6 +66,7 @@ chmod 754 /usr/lib/systemd/system/shadowsocks.service
 systemctl enable shadowsocks
 systemctl start shadowsocks
 firewall-cmd --add-port=$PORT1/tcp --permanent
+firewall-cmd --add-port=$PORT1/udp --permanent
 firewall-cmd --reload
 
 echo -e "You can now connect to your Shadowsocks via your external IP \033[32m${ip2}\033[0m"
