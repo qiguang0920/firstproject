@@ -40,6 +40,7 @@ done
 #[ ! -e '/usr/bin/wget' ] && yum -y install wget
 #[ ! -e '/usr/bin/unzip' ] && yum -y install unzip
 rpm -ivh http://rpms.famillecollet.com/enterprise/remi-release-7.rpm
+yum --enablerepo=repo install libargon2
 yum install --enablerepo=remi-php$php_version php php-opcache php-devel php-mbstring php-mcrypt php-mysqlnd php-phpunit-PHPUnit php-bcmath php-gd php-common -y 
 yum install php$php_version -y
 if [ ! -e /etc/yum.repos.d/MariaDB.repo ];then
