@@ -51,7 +51,7 @@ if [ ! -e /etc/yum.repos.d/MariaDB.repo ];then
 [mariadb]
 name = MariaDB
 #baseurl = https://mirrors.ustc.edu.cn/mariadb/yum/10.3/centos73-amd64
-#baseurl = https://yum.mariadb.org/10.3/centos73-amd64
+baseurl = https://yum.mariadb.org/10.3/centos73-amd64
 gpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
 gpgcheck=1
 EOF
