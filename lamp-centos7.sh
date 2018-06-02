@@ -47,9 +47,11 @@ if [ ! -e /etc/yum.repos.d/MariaDB.repo ];then
         cat > /etc/yum.repos.d/MariaDB.repo << EOF
 # MariaDB 10.1 CentOS repository list - created 2016-12-01 03:36 UTC
 # http://downloads.mariadb.org/mariadb/repositories/
+# https://yum.mariadb.org/10.3/centos73-amd64/
 [mariadb]
 name = MariaDB
-baseurl = https://mirrors.ustc.edu.cn/mariadb/yum/10.3/centos73-amd64
+#baseurl = https://mirrors.ustc.edu.cn/mariadb/yum/10.3/centos73-amd64
+#baseurl = https://yum.mariadb.org/10.3/centos73-amd64
 gpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
 gpgcheck=1
 EOF
