@@ -85,7 +85,7 @@ h1 { font-size:18px; }
 <div id="container">
   <div id="header">
     <h1>This is a test page</h1>
-<h1>See this page proved LAMP installation was successful</h1>
+<h1>Seeing this page proved LAMP installation was successful</h1>
     <!-- end #header -->
   </div>
   <div class="clearfloat"></div>
@@ -189,7 +189,7 @@ h1 { font-size:18px; }
 <div id="container">
   <div id="header">
     <h1>This is a test page</h1>
-<h1>See this page proved LAMP installation was successful</h1>
+<h1>Seeing this page proved LAMP installation was successful</h1>
     <!-- end #header -->
   </div>
   <div class="clearfloat"></div>
