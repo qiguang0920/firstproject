@@ -101,7 +101,7 @@ phpinfo();
 ?>
 EOF
 fi
-wget http://www.yahei.net/tz/tz.zip && unzip tz.zip && mv tz.php $public_dir/$domain/public_html/t.php && rm -rf ./tz.zip
+wget https://www.iewb.net/down/tz.zip && unzip tz.zip && mv tz.php $public_dir/$domain/public_html/t.php && rm -rf ./tz.zip
 if [ "$phpmyadmin" != "no" ];then
 /usr/bin/wget https://files.phpmyadmin.net/phpMyAdmin/4.7.7/phpMyAdmin-4.7.7-all-languages.zip && /usr/bin/unzip ./phpMyAdmin-4.7.7-all-languages.zip && mv ./phpMyAdmin-4.7.7-all-languages $public_dir/$domain/public_html/phpmyadmin &&rm -rf phpMyAdmin-4.7.7-all-languages.zip  
 else
