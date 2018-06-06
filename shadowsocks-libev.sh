@@ -66,7 +66,7 @@ EOF
 chmod 754 /usr/lib/systemd/system/shadowsocks.service
 systemctl enable shadowsocks
 systemctl start shadowsocks
-rm -rf shadowsocks-libev
+/bin/rm -rf shadowsocks-libev
 firewall-cmd --add-port=$PORT1/tcp --permanent
 firewall-cmd --add-port=$PORT1/udp --permanent
 firewall-cmd --reload
