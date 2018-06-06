@@ -66,12 +66,12 @@ EOF
 chmod 754 /usr/lib/systemd/system/shadowsocks.service
 systemctl enable shadowsocks
 systemctl start shadowsocks
-/bin/rm -rf shadowsocks-libev
+#/bin/rm -rf shadowsocks-libev
 firewall-cmd --add-port=$PORT1/tcp --permanent
 firewall-cmd --add-port=$PORT1/udp --permanent
 firewall-cmd --reload
 
-echo -e "You can now connect to your Shadowsocks via your external IP \033[32m${ip2}\033[0m"
+echo -e "Now you can connect to your Shadowsocks via your external IP \033[32m${ip2}\033[0m"
 echo -e "Port: \033[32m${PORT1}\033[0m" "Password: \033[32m${PWD1}\033[0m"
 echo -e "Local_port: \033[32m 1080\033[0m"
 echo -e "Method: \033[32m aes-256-cfb \033[0m"
