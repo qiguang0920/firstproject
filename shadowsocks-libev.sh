@@ -2,6 +2,7 @@
 yum install git vim wget -y
 yum install epel-release -y
 yum install gcc gettext autoconf libtool automake make pcre-devel asciidoc xmlto c-ares-devel libev-devel libsodium-devel mbedtls-devel -y
+yum --enablerepo=epel install mbedtls* libsodium* --skip-broken -y
 
 [ ! -e '/usr/bin/curl' ] && yum -y install curl
 ip=`ip addr |grep "inet"|grep -v "127.0.0.1"|grep -v "inet6" |cut -d: -f2|awk '{print $2}'|awk -F '/' '{print $1}'`
