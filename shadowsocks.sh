@@ -71,6 +71,7 @@ systemctl enable shadowsocks
 systemctl start shadowsocks
 firewall-cmd --add-port=$PORT1/tcp --permanent
 firewall-cmd --add-port=$PORT2/tcp --permanent
+firewall-cmd --reload
 echo -e "You can now connect to your Shadowsocks via your external IP \033[32m${ip2}\033[0m"
 echo -e "Port1: \033[32m${PORT1}\033[0m" "Password: \033[32m${PWD1}\033[0m"
 echo -e "Port2: \033[32m${PORT2}\033[0m" "Password: \033[32m${PWD2}\033[0m"
