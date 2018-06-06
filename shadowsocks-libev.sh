@@ -25,12 +25,12 @@ PWD1="botonet123"
 
 
 while :; do echo
-    read -p "Please input the first port you will be use: " PORT1 
+    read -p "Please input a port you will be use: " PORT1 
     [ -n "$PORT1" ] && break
 done
 
 while :; do echo
-    read -p "Please input password for the first port: " PWD1
+    read -p "Please input password for your port: " PWD1
     [ -n "$PWD1" ] && break
 done
 
@@ -66,6 +66,7 @@ EOF
 chmod 754 /usr/lib/systemd/system/shadowsocks.service
 systemctl enable shadowsocks
 systemctl start shadowsocks
+rm -rf shadowsocks-libev
 firewall-cmd --add-port=$PORT1/tcp --permanent
 firewall-cmd --add-port=$PORT1/udp --permanent
 firewall-cmd --reload
