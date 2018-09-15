@@ -39,12 +39,15 @@ done
 [ ! -e '/etc/yum.repos.d/epel.repo' ] && yum -y install epel-release
 #[ ! -e '/usr/bin/wget' ] && yum -y install wget
 #[ ! -e '/usr/bin/unzip' ] && yum -y install unzip
-# Specified apache version 
-cd /etc/yum.repos.d && wget https://repo.codeit.guru/codeit.el`rpm -q --qf "%{VERSION}" $(rpm -q --whatprovides redhat-release)`.repo 
+
 rpm -ivh http://rpms.famillecollet.com/enterprise/remi-release-7.rpm --force --nodeps
 yum --enablerepo=epel install libargon2 libmcrypt -y
 yum install --enablerepo=remi-php$php_version php php-opcache php-devel php-mbstring php-mcrypt php-mysqlnd php-phpunit-PHPUnit php-bcmath php-gd php-common -y 
 yum install php$php_version -y
+
+# Specified apache version 
+cd /etc/yum.repos.d && wget https://repo.codeit.guru/codeit.el`rpm -q --qf "%{VERSION}" $(rpm -q --whatprovides redhat-release)`.repo 
+
 if [ ! -e /etc/yum.repos.d/MariaDB.repo ];then
         cat > /etc/yum.repos.d/MariaDB.repo << EOF
 # MariaDB 10.1 CentOS repository list - created 2016-12-01 03:36 UTC
