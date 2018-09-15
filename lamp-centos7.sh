@@ -17,22 +17,22 @@ domain="test.com"
 public_dir="/home/Public_Root"
 phpmyadmin="yes"
 while :; do echo
-    read -p "Please input your domain,if haven't,input [test.com]: " domain 
+    read -p "Please input your domain,if haven't,input [test.com]: " domain
     [ -n "$domain" ] && break
 done
 
 while :; do echo
-    read -p "Please input the php version [56][70][71][72]: " php_version 
+    read -p "Please input the php version [56][70][71][72][73]: " php_version
     [ -n "$php_version" ] && break
 done
 
 while :; do echo
-    read -p "Please input MariaDB password: " dbpasswd 
+    read -p "Please input MariaDB password: " dbpasswd
     [ -n "$dbpasswd" ] && break
 done
 
 while :; do echo
-    read -p "Do you want to install phpmyadmin [yes]or[no]: " phpmyadmin 
+    read -p "Do you want to install phpmyadmin [yes]or[no]: " phpmyadmin
     [ -n "$phpmyadmin" ] && break
 done
 
@@ -42,11 +42,11 @@ done
 
 rpm -ivh http://rpms.famillecollet.com/enterprise/remi-release-7.rpm --force --nodeps
 yum --enablerepo=epel install libargon2 libmcrypt -y
-yum install --enablerepo=remi-php$php_version php php-opcache php-devel php-mbstring php-mcrypt php-mysqlnd php-phpunit-PHPUnit php-bcmath php-gd php-common -y 
+yum install --enablerepo=remi-php$php_version php php-opcache php-devel php-mbstring php-mcrypt php-mysqlnd php-phpunit-PHPUnit php-bcmath php-gd php-common -y
 yum install php$php_version -y
 
-# Specified apache version 
-cd /etc/yum.repos.d && wget https://repo.codeit.guru/codeit.el`rpm -q --qf "%{VERSION}" $(rpm -q --whatprovides redhat-release)`.repo 
+# Specified apache version
+cd /etc/yum.repos.d && wget https://repo.codeit.guru/codeit.el`rpm -q --qf "%{VERSION}" $(rpm -q --whatprovides redhat-release)`.repo
 
 if [ ! -e /etc/yum.repos.d/MariaDB.repo ];then
         cat > /etc/yum.repos.d/MariaDB.repo << EOF
