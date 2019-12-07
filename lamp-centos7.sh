@@ -49,8 +49,8 @@ if [ ! -e /etc/yum.repos.d/MariaDB.repo ];then
 # https://yum.mariadb.org/10.3/centos73-amd64/
 [mariadb]
 name = MariaDB
-baseurl = https://mirrors.ustc.edu.cn/mariadb/yum/10.3/centos7-amd64
-	https://yum.mariadb.org/10.3/centos7-amd64
+baseurl = https://mirrors.ustc.edu.cn/mariadb/yum/10.5/centos7-amd64
+	https://yum.mariadb.org/10.5/centos7-amd64
 gpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
 gpgcheck=1
 EOF
@@ -84,7 +84,7 @@ h1 { font-size:18px; }
 <div id="container">
   <div id="header">
     <h1>This is a test page</h1>
-<h1>Seeing this page proved LAMP installation was successful</h1>
+<h1>LAMP installation was successful!</h1>
     <!-- end #header -->
   </div>
   <div class="clearfloat"></div>
@@ -102,7 +102,7 @@ EOF
 fi
 wget https://www.iewb.net/down/tz.zip && unzip tz.zip && mv tz.php $public_dir/$domain/public_html/t.php && rm -rf ./tz.zip
 if [ "$phpmyadmin" != "no" ];then
-/usr/bin/wget https://files.phpmyadmin.net/phpMyAdmin/4.7.7/phpMyAdmin-4.7.7-all-languages.zip && /usr/bin/unzip ./phpMyAdmin-4.7.7-all-languages.zip && mv ./phpMyAdmin-4.7.7-all-languages $public_dir/$domain/public_html/phpmyadmin &&rm -rf phpMyAdmin-4.7.7-all-languages.zip  
+/usr/bin/wget https://files.phpmyadmin.net/phpMyAdmin/4.9.2/phpMyAdmin-4.9.2-all-languages.zip && /usr/bin/unzip ./phpMyAdmin-4.9.2-all-languages.zip && mv ./phpMyAdmin-4.9.2-all-languages $public_dir/$domain/public_html/phpmyadmin &&rm -rf phpMyAdmin-4.9.2-all-languages.zip 
 else
 	echo "You select don't install phpmyadmin."
 fi
