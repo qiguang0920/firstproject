@@ -2,7 +2,7 @@
 clear
 printf "
 #####################################################################
-#                Install NAMED for CentOS 	                        #
+#                Install NAMED for CentOS 	                    #
 #            More information http://www.iewb.net                   #
 #####################################################################
 "
