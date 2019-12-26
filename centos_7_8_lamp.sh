@@ -61,6 +61,31 @@ esac
 	
 [ -n "$php_version" ] && break
 done
+
+while :; do echo
+	echo "1. MariaDB 10.3"
+	echo "2. MariaDB 10.4"
+	echo "3. MariaDB 10.5"
+	read -t 20 -p "Please choose the MariaDB version :" v1	
+	case "$v1" in
+	1)
+	MariaDB_version=10.3
+	;;
+	2)
+	MariaDB_version=10.4
+	;;
+	3)
+	MariaDB_version=10.5
+	;;
+	*)
+	 echo "Your choice is not 1-3 ,will be setup MariaDB 10.5"
+	 MariaDB_version=${MariaDB_version:-10.5}
+	;;	 
+esac
+	
+[ -n "$MariaDB_version" ] && break
+done
+
 while :; do echo
     read -t 20 -p "Please input MariaDB password: " dbpasswd
 	dbpasswd=${dbpasswd:-admin888}
@@ -103,8 +128,8 @@ if [ ! -e /etc/yum.repos.d/MariaDB.repo ];then
 # https://yum.mariadb.org/10.3/centos73-amd64/
 [mariadb]
 name = MariaDB
-baseurl = https://mirrors.ustc.edu.cn/mariadb/yum/10.5/centos$os_version_id-amd64
-	https://yum.mariadb.org/10.5/centos$os_version_id-amd64
+baseurl = https://mirrors.ustc.edu.cn/mariadb/yum/$MariaDB_version/centos$os_version_id-amd64
+	https://yum.mariadb.org/$MariaDB_version/centos$os_version_id-amd64
 gpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
 gpgcheck=1
 EOF
