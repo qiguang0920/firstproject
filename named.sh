@@ -2,7 +2,7 @@
 clear
 printf "
 #####################################################################
-#                Install NAMED for CentOS 	                    #
+#                Install NAMED for CentOS 	                        #
 #            More information http://www.iewb.net                   #
 #####################################################################
 "
@@ -20,7 +20,7 @@ sed -i '23a\                     8.8.8.8;' /etc/named.conf
 sed -i '24a\                     8.8.4.4;' /etc/named.conf
 sed -i '25a\};' /etc/named.conf
 else
-echo "/etc/named.conf不存在，没有正确安装bind9或者此脚本不适用于您的系统"
+echo "/etc/named.confnot found,maybe bind install false."
 fi
 if [ -e /etc/named.rfc1912.zones ];then
 sed -i '24a\zone "test.com" IN {' /etc/named.rfc1912.zones
@@ -28,7 +28,7 @@ sed -i '25a\        type master;' /etc/named.rfc1912.zones
 sed -i '26a\        file "test.com.zone";' /etc/named.rfc1912.zones
 sed -i '27a\};' /etc/named.rfc1912.zones
 else
-echo "/etc/named.rfc1912.zones不存在，没有正确安装bind9或者此脚本不适用于您的系统"
+echo "/etc/named.rfc1912.zones not found,maybe bind install false."
 fi
 if [ -d /var/named ];then
 cat > /var/named/test.com.zone << EOF
