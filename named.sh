@@ -14,8 +14,8 @@ if [ -e /etc/named.conf ];then
 sed -i "s/listen-on port 53 { 127.0.0.1/listen-on port 53 { 127.0.0.1;$ip/g" /etc/named.conf
 sed -i 's/allow-query     { localhost; }/allow-query     { any; }/g' /etc/named.conf
 sed -i '20a\forwarders {' /etc/named.conf
-sed -i '21a\                     223.5.5.5;' /etc/named.conf
-sed -i '22a\                     223.6.6.6;' /etc/named.conf
+sed -i '21a\                     199.85.126.10;' /etc/named.conf
+sed -i '22a\                     1.1.1.1;' /etc/named.conf
 sed -i '23a\                     8.8.8.8;' /etc/named.conf
 sed -i '24a\                     8.8.4.4;' /etc/named.conf
 sed -i '25a\};' /etc/named.conf
