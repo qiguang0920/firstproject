@@ -53,4 +53,3 @@ firewall-cmd --add-service=dns
 firewall-cmd --reload
 systemctl restart named
 systemctl enable named
-
