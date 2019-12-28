@@ -37,13 +37,18 @@ cat > /var/named/test.com.zone << EOF
                                         10M     ; refresh
                                         3M      ; retry
                                         1D      ; expire
-                                        3D )    ; minimum
+					3D)	;minimum
         NS      ns1
         A       172.16.88.13
-;       AAAA    ::1
+        AAAA    ::1
 ns1     A       172.16.88.12
 admin   A       172.16.88.13
 1       A       172.16.88.13
+c       CNAME   2345.com.
+c2      CNAME   admin
+@       MX      5       172.16.88.13
+@       MX      10      172.16.88.12
+@       TXT     "v=spf1 include:spf mail.test.com test.com ~all"
 EOF
 sed -i '1i\$TTL 1D' /var/named/test.com.zone
 fi
