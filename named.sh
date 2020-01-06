@@ -78,7 +78,7 @@ fi
 sed -i '$a\OPTIONS="-4"' /etc/sysconfig/named
 setenforce 0
 sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config
-firewall-cmd --add-service=dns
+firewall-cmd --add-service=dns --permanent
 firewall-cmd --reload
 systemctl restart named
 systemctl enable named
