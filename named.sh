@@ -20,6 +20,7 @@ sed -i '22a\//                     168.95.192.1;' /etc/named.conf
 sed -i '23a\//                     4.2.2.1;' /etc/named.conf
 sed -i '24a\//                     8.8.8.8;' /etc/named.conf
 sed -i '25a\//};' /etc/named.conf
+sed -i '26a\querylog yes;' /etc/named.conf
 else
 echo "/etc/named.confnot found,maybe bind install false."
 fi
