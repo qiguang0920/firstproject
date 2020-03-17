@@ -3,7 +3,8 @@ clear
 printf "
 #######################################################################
 #                Install LAMP for CentOS7/8                           #
-#            More information http://www.iewb.net                     #
+#             More information http://www.iewb.net                    #
+#                         BY:2020-03-16                               #
 #######################################################################
 "
 os_name=`awk -F= '/^NAME/{print $2}' /etc/os-release | awk -F'"' '{print $2}'`
@@ -19,7 +20,7 @@ read -p "Please choose what you want to do: " i
 case "$i" in
 	1)
 dbpasswd="admin888"
-public_dir="/home/Public_Root"
+public_dir="/Data/Public_Root"
 while :; do echo
     read -t 20 -p "Please input your domain,if haven't,input [test.com]: " domain
 	domain=${domain:-test.com}
@@ -109,8 +110,8 @@ sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 8M/g' /etc/php.ini
 sed -i 's/short_open_tag = Off/short_open_tag = ON/g' /etc/php.ini
 else 
 #yum install php php-opcache php-devel php-mbstring php-mysqlnd php-bcmath php-gd php-common -y
-yum install -y --enablerepo=remi php$php_version-php-fpm php$php_version-php-cli php$php_version-php-bcmath php$php_version-php-gd php$php_version-php-json php$php_version-php-mbstring php$php_version-php-mcrypt php$php_version-php-mysqlnd php$php_version-php-opcache php$php_version-php-pdo php$php_version-php-pecl-crypto php$php_version-php-pecl-geoip php$php_version-php-recode php$php_version-php-snmp php$php_version-php-soap php$php_version-php-xml
-yum install -y --enablerepo=remiphp$php_version-php-pecl-mcrypt 
+dnf install -y --enablerepo=remi php$php_version-php-fpm php$php_version-php-cli php$php_version-php-bcmath php$php_version-php-gd php$php_version-php-json php$php_version-php-mbstring php$php_version-php-mcrypt php$php_version-php-mysqlnd php$php_version-php-opcache php$php_version-php-pdo php$php_version-php-pecl-crypto php$php_version-php-pecl-geoip php$php_version-php-recode php$php_version-php-snmp php$php_version-php-soap php$php_version-php-xml
+dnf install -y --enablerepo=remi php$php_version-php-pecl-mcrypt 
 sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 8M/g' /etc/opt/remi/php$php_version/php.ini
 sed -i 's/short_open_tag = Off/short_open_tag = ON/g' /etc/opt/remi/php$php_version/php.ini
 systemctl enable php$php_version-php-fpm
@@ -130,16 +131,18 @@ if [ ! -e /etc/yum.repos.d/MariaDB.repo ];then
 name = MariaDB
 baseurl = https://mirrors.ustc.edu.cn/mariadb/yum/$MariaDB_version/centos$os_version_id-amd64
 	https://yum.mariadb.org/$MariaDB_version/centos$os_version_id-amd64
-gpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
+gpgkey = https://mirrors.ustc.edu.cn/mariadb/yum/RPM-GPG-KEY-MariaDB
+	https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
 gpgcheck=1
 EOF
 fi
 if [ "$os_version_id" = "7" ];then
 yum install --enablerepo=mariadb mariadb mariadb-server -y
 else
+yum -y install galera
 yum -y install galera-4
 sed -i 's/name=CentOS-$releasever - AppStream/name=AppStream/g' /etc/yum.repos.d/CentOS-AppStream.repo
-yum install --disablerepo=AppStream MariaDB-server MariaDB-client -y 
+dnf install --disablerepo=AppStream MariaDB-server MariaDB-client -y 
 fi
 #Install Httpd
 yum --enablerepo=epel install libargon2 libmcrypt -y 
@@ -147,7 +150,7 @@ yum install httpd mod_ssl openssl unzip wget -y
 
 
 
-mkdir $public_dir &&mkdir $public_dir/$domain &&mkdir $public_dir/$domain/public_html &&mkdir $public_dir/$domain/logs
+mkdir /Data && mkdir $public_dir &&mkdir $public_dir/$domain &&mkdir $public_dir/$domain/public_html &&mkdir $public_dir/$domain/logs
 if [ ! -e $public_dir/$domain/public_html/index.php ];then
         cat > $public_dir/$domain/public_html/index.php << EOF
 <title>LAMP Test Page!</title>
@@ -214,6 +217,23 @@ firewall-cmd --add-service=https --permanent
 firewall-cmd --reload
 setenforce 0
 sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config
+##Move MariaDB
+mkdir /Data/sqldata
+cp -a /var/lib/mysql/* /Data/sqldata
+chown -R mysql:mysql /Data/sqldata
+sed -i '1i\socket=/Data/sqldata/mysql.sock' /etc/my.cnf
+sed -i '1i\[client-server]' /etc/my.cnf
+sed -i '4,7d' /etc/my.cnf
+sed -i "3a\[mysqld]" /etc/my.cnf
+sed -i "4a\init_connect='SET collation_connection = utf8mb4_unicode_ci'" /etc/my.cnf
+sed -i "5a\init_connect='SET NAMES utf8mb4'" /etc/my.cnf
+sed -i "6a\character_set_server=utf8mb4" /etc/my.cnf
+sed -i "7a\collation-server=utf8mb4_unicode_ci" /etc/my.cnf
+sed -i "8a\skip-character-set-client-handshake=true" /etc/my.cnf
+sed -i "9a\datadir=/Data/sqldata" /etc/my.cnf
+sed -i "10a\socket=/Data/sqldata/mysql.sock" /etc/my.cnf
+rm -rf /var/lib/mysql/*
+ln -s /Data/sqldata/mysql.sock /var/lib/mysql/mysql.sock
 systemctl start httpd mariadb
 systemctl enable httpd mariadb
 mysqladmin -uroot password ''$dbpasswd''
@@ -227,7 +247,7 @@ read -p "please choose what you want to do: " i2
 case "$i2" in
 a)
 adddomain="test2.com"
-public_dir="/home/Public_Root"
+public_dir="/Data/Public_Root"
 
 while :; do echo
     read -p "Please input your new domain: " adddomain 
@@ -298,7 +318,7 @@ fi
 ;;
 b)
 deldomain="test2.com"
-public_dir="/home/Public_Root"
+public_dir="/Data/Public_Root"
 
 while :; do echo
     read -p "Please input your domain what your want del: " deldomain 
