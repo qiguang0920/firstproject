@@ -1,5 +1,5 @@
 #!/bin/bash
-Wan_IP=`curl -s https://api.ip.sb/ip`
+Wan_IP=`curl -s https://api-ipv4.ip.sb/ip`
 Last_IP=`cat /home/Last_IP.txt`
 if [[ $Wan_IP =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]] && [ "$Wan_IP" != "$Last_IP" ]
 then
