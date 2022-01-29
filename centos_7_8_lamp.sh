@@ -99,6 +99,8 @@ while :; do echo
     [ -n "$phpmyadmin" ] && break
 done
 
+#yum clean all
+yum clean all
 ##Install EPEL
 [ ! -e '/etc/yum.repos.d/epel.repo' ] && yum -y install epel-release 
 
