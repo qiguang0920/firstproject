@@ -155,6 +155,7 @@ dnf install --disablerepo=AppStream MariaDB-server MariaDB-client -y
 if [ ! -e /etc/my.cnf ];then
 dnf install mariadb mariadb-server -y 
 fi
+fi
 #Install Httpd
 yum --enablerepo=epel install libargon2 libmcrypt -y 
 yum install httpd mod_ssl openssl unzip wget -y
