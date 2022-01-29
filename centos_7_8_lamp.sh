@@ -119,7 +119,7 @@ sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 8M/g' /etc/php.ini
 sed -i 's/short_open_tag = Off/short_open_tag = ON/g' /etc/php.ini
 else 
 #yum install php php-opcache php-devel php-mbstring php-mysqlnd php-bcmath php-gd php-common -y
-dnf install -y --enablerepo=remi php$php_version php$php_version-php-fpm php$php_version-php-cli php$php_version-php-bcmath php$php_version-php-gd php$php_version-php-json php$php_version-php-mbstring php$php_version-php-mcrypt php$php_version-php-mysqlnd php$php_version-php-opcache php$php_version-php-pdo php$php_version-php-pecl-crypto php$php_version-php-pecl-geoip php$php_version-php-recode php$php_version-php-snmp php$php_version-php-soap php$php_version-php-xml
+dnf install -y --enablerepo=remi php$php_version php$php_version-php-fpm php$php_version-php-cli php$php_version-php-bcmath php$php_version-php-gd php$php_version-php-json php$php_version-php-mbstring php$php_version-php-mcrypt php$php_version-php-mysqlnd php$php_version-php-opcache php$php_version-php-pdo php$php_version-php-pecl-crypto php$php_version-php-pecl-geoip php$php_version-php-snmp php$php_version-php-soap php$php_version-php-xml
 dnf install -y --enablerepo=remi php$php_version-php-pecl-mcrypt 
 sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 8M/g' /etc/opt/remi/php$php_version/php.ini
 sed -i 's/short_open_tag = Off/short_open_tag = ON/g' /etc/opt/remi/php$php_version/php.ini
@@ -152,6 +152,8 @@ yum -y install galera
 yum -y install galera-4
 sed -i 's/name=CentOS-$releasever - AppStream/name=AppStream/g' /etc/yum.repos.d/CentOS-AppStream.repo
 dnf install --disablerepo=AppStream MariaDB-server MariaDB-client -y 
+if [ ! -e /etc/my.cnf ];then
+dnf install mariadb mariadb-server -y 
 fi
 #Install Httpd
 yum --enablerepo=epel install libargon2 libmcrypt -y 
