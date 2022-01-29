@@ -106,7 +106,7 @@ yum clean all
 
 ##Install PHP
 #rpm -ivh http://rpms.famillecollet.com/enterprise/remi-release-$os_version_id.rpm --force --nodeps 
-rpm -ivh https://mirrors.tuna.tsinghua.edu.cn/remi/enterprise/remi-release-$os_version_id.rpm --force --nodeps 
+rpm -ivh https://mirrors.ustc.edu.cn/remi/enterprise/remi-release-$os_version_id.rpm --force --nodeps 
 if [ "$os_version_id" = "7" ];then
 yum install --enablerepo=remi-php$php_version php php-opcache php-devel php-mbstring php-mcrypt php-mysqlnd php-phpunit-PHPUnit php-bcmath php-gd php-common php-snmp -y && yum install php -y
 sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 8M/g' /etc/php.ini
