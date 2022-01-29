@@ -1,4 +1,7 @@
 #!/bin/bash
+#Time
+ntpdate -u pool.ntp.org
+chronyd -q 'server pool.ntp.org iburst'
 clear
 printf "
 #######################################################################
