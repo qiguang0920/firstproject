@@ -152,7 +152,7 @@ yum -y install galera
 yum -y install galera-4
 sed -i 's/name=CentOS-$releasever - AppStream/name=AppStream/g' /etc/yum.repos.d/CentOS-AppStream.repo
 dnf install --disablerepo=AppStream MariaDB-server MariaDB-client -y 
-if [ ! -e /etc/my.cnf ];then
+if [ ! -e /var/lib/mysql ];then
 dnf install mariadb mariadb-server -y 
 fi
 fi
