@@ -30,10 +30,10 @@ done
 while :; do echo
 	echo "1. PHP5.6"
 	echo "2. PHP7.0"
-	echo "3. PHP7.1"
-	echo "4. PHP7.2"
-	echo "5. PHP7.3"
-	echo "6. PHP7.4"
+	echo "3. PHP7.3"
+	echo "4. PHP7.4"
+	echo "5. PHP8.0"
+	echo "6. PHP8.1"
 	read -t 20 -p "Please choose the PHP version :" v	
 	case "$v" in
 	1)
@@ -43,20 +43,20 @@ while :; do echo
 	php_version=70
 	;;
 	3)
-	php_version=71
-	;;
-	4)
-	php_version=72
-	;;
-	5)
 	php_version=73
 	;;
-	6)
+	4)
 	php_version=74
 	;;
+	5)
+	php_version=80
+	;;
+	6)
+	php_version=81
+	;;
 	*)
-	 echo "Your choice is not 1-6 ,will be setup php7.4"
-	 php_version=${php_version:-74}
+	 echo "Your choice is not 1-6 ,will be setup php8.1"
+	 php_version=${php_version:-81}
 	;;	 
 esac
 	
@@ -65,22 +65,22 @@ done
 
 while :; do echo
 	echo "1. MariaDB 10.3"
-	echo "2. MariaDB 10.4"
-	echo "3. MariaDB 10.5"
+	echo "2. MariaDB 10.5"
+	echo "3. MariaDB 10.7"
 	read -t 20 -p "Please choose the MariaDB version :" v1	
 	case "$v1" in
 	1)
 	MariaDB_version=10.3
 	;;
 	2)
-	MariaDB_version=10.4
-	;;
-	3)
 	MariaDB_version=10.5
 	;;
+	3)
+	MariaDB_version=10.7
+	;;
 	*)
-	 echo "Your choice is not 1-3 ,will be setup MariaDB 10.5"
-	 MariaDB_version=${MariaDB_version:-10.5}
+	 echo "Your choice is not 1-3 ,will be setup MariaDB 10.7"
+	 MariaDB_version=${MariaDB_version:-10.7}
 	;;	 
 esac
 	
@@ -103,7 +103,8 @@ done
 [ ! -e '/etc/yum.repos.d/epel.repo' ] && yum -y install epel-release 
 
 ##Install PHP
-rpm -ivh http://rpms.famillecollet.com/enterprise/remi-release-$os_version_id.rpm --force --nodeps 
+#rpm -ivh http://rpms.famillecollet.com/enterprise/remi-release-$os_version_id.rpm --force --nodeps 
+rpm -ivh https://mirrors.tuna.tsinghua.edu.cn/remi/enterprise/remi-release-$os_version_id.rpm --force --nodeps 
 if [ "$os_version_id" = "7" ];then
 yum install --enablerepo=remi-php$php_version php php-opcache php-devel php-mbstring php-mcrypt php-mysqlnd php-phpunit-PHPUnit php-bcmath php-gd php-common php-snmp -y && yum install php -y
 sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 8M/g' /etc/php.ini
@@ -190,7 +191,7 @@ phpinfo();
 ?>
 EOF
 fi
-wget https://www.iewb.net/down/tz.zip --no-check-certificate && unzip tz.zip && mv tz.php $public_dir/$domain/public_html/t.php && rm -rf ./tz.zip
+wget https://static.lty.fun/%E5%85%B6%E4%BB%96%E8%B5%84%E6%BA%90/Status-TZ/yhtz7-https.zip --no-check-certificate && unzip yhtz7-https.zip && mv yhtz7-https.php $public_dir/$domain/public_html/t.php && rm -rf ./tz.zip
 if [ "$phpmyadmin" != "no" ];then
 /usr/bin/wget https://files.phpmyadmin.net/phpMyAdmin/4.9.2/phpMyAdmin-4.9.2-all-languages.zip && /usr/bin/unzip ./phpMyAdmin-4.9.2-all-languages.zip && mv ./phpMyAdmin-4.9.2-all-languages $public_dir/$domain/public_html/phpmyadmin &&rm -rf phpMyAdmin-4.9.2-all-languages.zip 
 else
