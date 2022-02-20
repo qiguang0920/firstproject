@@ -49,11 +49,11 @@ touch /etc/shadowsocks-libev/config.json
 	"local_port":1080,
 	"password":"$PWD1",
 	"timeout":60,
-	"method":"aes-256-cfb",
+	"method":"aes-256-gcm",
 	 "obfs":"tls",
         "obfshost":"itunes.apple.com",
 	"plugin":"obfs-server",
-	"plugin_opts":"obfs=http"
+	"plugin_opts":"obfs=tls"
 }
 EOF
 
