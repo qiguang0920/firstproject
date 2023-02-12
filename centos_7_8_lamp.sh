@@ -202,9 +202,9 @@ phpinfo();
 ?>
 EOF
 fi
-wget https://static.lty.fun/%E5%85%B6%E4%BB%96%E8%B5%84%E6%BA%90/Status-TZ/yhtz7-https.zip --no-check-certificate && unzip yhtz7-https.zip && mv yhtz7-https.php $public_dir/$domain/public_html/t.php && rm -rf ./tz.zip
+wget https://static.lty.fun/%E5%85%B6%E4%BB%96%E8%B5%84%E6%BA%90/Status-TZ/yhtz7-https.zip --no-check-certificate && unzip yhtz7-https.zip && mv yhtz7-https.php $public_dir/$domain/public_html/t.php && rm -rf ./yhtz7-https.zip
 if [ "$phpmyadmin" != "no" ];then
-/usr/bin/wget https://files.phpmyadmin.net/phpMyAdmin/5.2.1/phpMyAdmin-5.2.1-all-languages.zip --no-check-certificate && /usr/bin/unzip ./phpMyAdmin-4.9.2-all-languages.zip && mv ./phpMyAdmin-5.2.1-all-languages $public_dir/$domain/public_html/phpmyadmin &&rm -rf phpMyAdmin-5.2.1-all-languages.zip 
+/usr/bin/wget https://files.phpmyadmin.net/phpMyAdmin/5.2.1/phpMyAdmin-5.2.1-all-languages.zip --no-check-certificate && /usr/bin/unzip ./phpMyAdmin-5.2.1-all-languages.zip && mv phpMyAdmin-5.2.1-all-languages $public_dir/$domain/public_html/phpmyadmin &&rm -rf phpMyAdmin-5.2.1-all-languages.zip 
 else
 	echo "You select don't install phpmyadmin."
 fi
