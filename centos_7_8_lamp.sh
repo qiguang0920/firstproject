@@ -35,10 +35,10 @@ done
 
 while :; do echo
 	echo "1. PHP5.4"
-	echo "2. PHP7.0"
+	echo "2. PHP7.2"
 	echo "3. PHP7.3"
 	echo "4. PHP7.4"
-	echo "5. PHP8.0"
+	echo "5. PHP8.1"
 	echo "6. PHP8.2"
 	read -t 20 -p "Please choose the PHP version :" v	
 	case "$v" in
@@ -46,7 +46,7 @@ while :; do echo
 	php_version=54
 	;;
 	2)
-	php_version=70
+	php_version=72
 	;;
 	3)
 	php_version=73
@@ -55,7 +55,7 @@ while :; do echo
 	php_version=74
 	;;
 	5)
-	php_version=80
+	php_version=81
 	;;
 	6)
 	php_version=82
@@ -119,6 +119,9 @@ sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 8M/g' /etc/php.ini
 sed -i 's/short_open_tag = Off/short_open_tag = ON/g' /etc/php.ini
 else 
 #yum install php php-opcache php-devel php-mbstring php-mysqlnd php-bcmath php-gd php-common -y
+#cd /etc/yum.repos.d
+sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*
+sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
 dnf install -y --enablerepo=remi php$php_version php$php_version-php-fpm php$php_version-php-cli php$php_version-php-bcmath php$php_version-php-gd php$php_version-php-json php$php_version-php-mbstring php$php_version-php-mcrypt php$php_version-php-mysqlnd php$php_version-php-opcache php$php_version-php-pdo php$php_version-php-pecl-crypto php$php_version-php-pecl-geoip php$php_version-php-snmp php$php_version-php-soap php$php_version-php-xml
 dnf install -y --enablerepo=remi php$php_version-php-pecl-mcrypt 
 sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 8M/g' /etc/opt/remi/php$php_version/php.ini
@@ -148,10 +151,10 @@ fi
 if [ "$os_version_id" = "7" ];then
 yum install --enablerepo=mariadb mariadb mariadb-server -y
 else
-yum -y install galera
-yum -y install galera-4
-sed -i 's/name=CentOS-$releasever - AppStream/name=AppStream/g' /etc/yum.repos.d/CentOS-AppStream.repo
-dnf install --disablerepo=AppStream MariaDB-server MariaDB-client -y 
+sed -i 's/centos8-amd64/rhel8-amd64/g' /etc/yum.repos.d/MariaDB.repo
+#yum -y install galera
+#yum -y install galera-4
+dnf module disable mariadb mysql -y
 if [ ! -e /var/lib/mysql ];then
 dnf install mariadb mariadb-server -y 
 fi
