@@ -34,16 +34,16 @@ while :; do echo
 done
 
 while :; do echo
-	echo "1. PHP5.6"
+	echo "1. PHP5.4"
 	echo "2. PHP7.0"
 	echo "3. PHP7.3"
 	echo "4. PHP7.4"
 	echo "5. PHP8.0"
-	echo "6. PHP8.1"
+	echo "6. PHP8.2"
 	read -t 20 -p "Please choose the PHP version :" v	
 	case "$v" in
 	1)
-	php_version=56
+	php_version=54
 	;;
 	2)
 	php_version=70
@@ -58,11 +58,11 @@ while :; do echo
 	php_version=80
 	;;
 	6)
-	php_version=81
+	php_version=82
 	;;
 	*)
-	 echo "Your choice is not 1-6 ,will be setup php8.1"
-	 php_version=${php_version:-81}
+	 echo "Your choice is not 1-6 ,will be setup php8.2"
+	 php_version=${php_version:-82}
 	;;	 
 esac
 	
@@ -70,23 +70,23 @@ esac
 done
 
 while :; do echo
-	echo "1. MariaDB 10.3"
-	echo "2. MariaDB 10.5"
-	echo "3. MariaDB 10.7"
+	echo "1. MariaDB 10.5"
+	echo "2. MariaDB 10.7"
+	echo "3. MariaDB 10.11"
 	read -t 20 -p "Please choose the MariaDB version :" v1	
 	case "$v1" in
 	1)
-	MariaDB_version=10.3
-	;;
-	2)
 	MariaDB_version=10.5
 	;;
-	3)
+	2)
 	MariaDB_version=10.7
 	;;
+	3)
+	MariaDB_version=10.11
+	;;
 	*)
-	 echo "Your choice is not 1-3 ,will be setup MariaDB 10.7"
-	 MariaDB_version=${MariaDB_version:-10.7}
+	 echo "Your choice is not 1-3 ,will be setup MariaDB 10.11"
+	 MariaDB_version=${MariaDB_version:-10.11}
 	;;	 
 esac
 	
@@ -204,13 +204,13 @@ EOF
 fi
 wget https://static.lty.fun/%E5%85%B6%E4%BB%96%E8%B5%84%E6%BA%90/Status-TZ/yhtz7-https.zip --no-check-certificate && unzip yhtz7-https.zip && mv yhtz7-https.php $public_dir/$domain/public_html/t.php && rm -rf ./tz.zip
 if [ "$phpmyadmin" != "no" ];then
-/usr/bin/wget https://files.phpmyadmin.net/phpMyAdmin/4.9.2/phpMyAdmin-4.9.2-all-languages.zip --no-check-certificate && /usr/bin/unzip ./phpMyAdmin-4.9.2-all-languages.zip && mv ./phpMyAdmin-4.9.2-all-languages $public_dir/$domain/public_html/phpmyadmin &&rm -rf phpMyAdmin-4.9.2-all-languages.zip 
+/usr/bin/wget https://files.phpmyadmin.net/phpMyAdmin/5.2.1/phpMyAdmin-5.2.1-all-languages.zip --no-check-certificate && /usr/bin/unzip ./phpMyAdmin-4.9.2-all-languages.zip && mv ./phpMyAdmin-5.2.1-all-languages $public_dir/$domain/public_html/phpmyadmin &&rm -rf phpMyAdmin-5.2.1-all-languages.zip 
 else
 	echo "You select don't install phpmyadmin."
 fi
 if [ ! -e /etc/httpd/conf.d/$domain.conf ];then
 echo "<Directory "\"$public_dir"\">" >>/etc/httpd/conf.d/$domain.conf
-echo "Options Indexes FollowSymlinks" >>/etc/httpd/conf.d/$domain.conf
+echo "Options FollowSymlinks" >>/etc/httpd/conf.d/$domain.conf
 echo "AllowOverride All" >>/etc/httpd/conf.d/$domain.conf
 echo "Require all granted" >>/etc/httpd/conf.d/$domain.conf
 echo "</Directory>" >>/etc/httpd/conf.d/$domain.conf
@@ -230,6 +230,8 @@ firewall-cmd --reload
 setenforce 0
 sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config
 ##Move MariaDB
+systemctl start mariadb
+systemctl stop mariadb
 mkdir /Data/sqldata
 cp -a /var/lib/mysql/* /Data/sqldata
 chown -R mysql:mysql /Data/sqldata
