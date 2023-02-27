@@ -35,6 +35,11 @@ chmod 754 /usr/lib/systemd/system/vpnserverservice
 systemctl enable vpnserver
 systemctl start vpnserver
 
+setenforce 0
+sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config
+echo "1" > /proc/sys/net/ipv4/ip_forward
+sysctl -p /etc/sysctl.conf
+
 firewall-cmd --add-port=5555/tcp --permanent
 firewall-cmd --add-port=443/tcp --permanent
 firewall-cmd --add-port=31400-31409/tcp --permanent
