@@ -38,6 +38,10 @@ systemctl start vpnserver
 setenforce 0
 sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config
 echo "1" > /proc/sys/net/ipv4/ip_forward
+if ! grep "net.ipv4.ip_forward = 1" /etc/sysctl.conf >>/dev/null
+then
+echo 'net.ipv4.ip_forward = 1' >> /etc/sysctl.conf
+fi
 sysctl -p /etc/sysctl.conf
 
 firewall-cmd --add-port=5555/tcp --permanent
