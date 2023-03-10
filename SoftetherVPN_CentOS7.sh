@@ -12,6 +12,11 @@ printf "
 #            More information http://www.iewb.net                     #
 #######################################################################
 "
+echo "1. Install Softether VPN Server"
+echo "2. Install Softether VPN Client"
+read -p "Please choose what you want to do: " i
+case "$i" in
+	1)
 [ ! -e '/usr/bin/wget' ] && yum -y install wget
 wget -O softether.tar.gz https://github.com/SoftEtherVPN/SoftEtherVPN_Stable/releases/download/v4.41-9782-beta/softether-vpnserver-v4.41-9782-beta-2022.11.17-linux-x64-64bit.tar.gz
 tar -zxvf softether.tar.gz
@@ -31,7 +36,7 @@ ExecStop= /root/vpnserver/vpnserver stop
 WantedBy=multi-user.target
 EOF
 
-chmod 754 /usr/lib/systemd/system/vpnserverservice
+chmod 754 /usr/lib/systemd/system/vpnserver.service
 systemctl enable vpnserver
 systemctl start vpnserver
 
@@ -61,3 +66,50 @@ firewall-cmd --add-forward-port=port=31409:proto=tcp:toport=31409:toaddr=192.168
 firewall-cmd --reload
 clear
 echo -e "\033[32m successful\033[0m"
+;;
+2)
+# Install SoftEther VPN Client for CentOS7
+#/sbin/ifconfig vpn_vpn2 192.168.30.15 netmask 255.255.255.0 up
+#cd vpnclient && ./vpncmd
+#RemoteEnable 
+[ ! -e '/usr/bin/wget' ] && yum -y install wget
+wget -O vpnclient.tar.gz https://github.com/SoftEtherVPN/SoftEtherVPN_Stable/releases/download/v4.41-9782-beta/softether-vpnclient-v4.41-9782-beta-2022.11.17-linux-x64-64bit.tar.gz
+tar -zxvf vpnclient.tar.gz
+yum -y install gcc net-tools
+cd vpnclient/
+make
+touch /usr/lib/systemd/system/vpnclient.service
+	cat > /usr/lib/systemd/system/vpnclient.service <<EOF
+[Unit]
+Description=SoftEther Client
+After=network.target
+[Service]
+Type=forking
+ExecStart=/root/vpnclient/vpnclient start
+ExecStop= /root/vpnclient/vpnclient stop
+[Install]
+WantedBy=multi-user.target
+EOF
+
+chmod 754 /usr/lib/systemd/system/vpnclient.service
+systemctl enable vpnclient
+systemctl start vpnclient
+
+firewall-cmd --add-port=9930/tcp --permanent
+firewall-cmd --reload
+#start
+touch /home/start.sh
+	cat > /home/start.sh <<EOF
+#!/bin/bash
+/sbin/ifconfig vpn_vpn 192.168.30.100 netmask 255.255.255.0 up
+EOF
+chmod +x /home/start.sh
+#crontab
+echo "@reboot sleep 60; /home/start.sh" >>/var/spool/cron/root
+
+clear
+echo -e "\033[32m successful\033[0m"
+;;
+*)
+		 echo "Please choose a right item."
+esac
