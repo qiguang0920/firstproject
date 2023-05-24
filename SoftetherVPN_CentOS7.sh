@@ -53,16 +53,7 @@ firewall-cmd --add-port=5555/tcp --permanent
 firewall-cmd --add-port=443/tcp --permanent
 firewall-cmd --add-port=31400-31409/tcp --permanent
 firewall-cmd --add-masquerade --permanent
-firewall-cmd --add-forward-port=port=31400:proto=tcp:toport=31400:toaddr=192.168.30.10 --permanent
-firewall-cmd --add-forward-port=port=31401:proto=tcp:toport=31401:toaddr=192.168.30.10 --permanent
-firewall-cmd --add-forward-port=port=31402:proto=tcp:toport=31402:toaddr=192.168.30.10 --permanent
-firewall-cmd --add-forward-port=port=31403:proto=tcp:toport=31403:toaddr=192.168.30.10 --permanent
-firewall-cmd --add-forward-port=port=31404:proto=tcp:toport=31404:toaddr=192.168.30.10 --permanent
-firewall-cmd --add-forward-port=port=31405:proto=tcp:toport=31405:toaddr=192.168.30.10 --permanent
-firewall-cmd --add-forward-port=port=31406:proto=tcp:toport=31406:toaddr=192.168.30.10 --permanent
-firewall-cmd --add-forward-port=port=31407:proto=tcp:toport=31407:toaddr=192.168.30.10 --permanent
-firewall-cmd --add-forward-port=port=31408:proto=tcp:toport=31408:toaddr=192.168.30.10 --permanent
-firewall-cmd --add-forward-port=port=31409:proto=tcp:toport=31409:toaddr=192.168.30.10 --permanent
+#firewall-cmd --add-forward-port=port=31400:proto=tcp:toport=31400:toaddr=192.168.30.10 --permanent
 firewall-cmd --reload
 clear
 echo -e "\033[32m successful\033[0m"
