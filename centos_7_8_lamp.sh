@@ -226,7 +226,7 @@ echo "ErrorLog $public_dir/$domain/logs/error.log" >>/etc/httpd/conf.d/$domain.c
 echo "CustomLog $public_dir/$domain/logs/access.log combined" >>/etc/httpd/conf.d/$domain.conf
 echo "</VirtualHost>" >>/etc/httpd/conf.d/$domain.conf
 fi
-systemctl start firewalld
+#systemctl start firewalld
 firewall-cmd --add-service=http --permanent 
 firewall-cmd --add-service=https --permanent
 firewall-cmd --reload
