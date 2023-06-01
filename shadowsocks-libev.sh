@@ -76,11 +76,12 @@ systemctl start shadowsocks
 firewall-cmd --add-port=$PORT1/tcp --permanent
 firewall-cmd --add-port=$PORT1/udp --permanent
 firewall-cmd --reload
+cd ..
 rm -rf ./shadowsocks-libev
 echo -e "Now you can connect to your Shadowsocks via your external IP \033[32m${ip2}\033[0m"
 echo -e "Port: \033[32m${PORT1}\033[0m" "Password: \033[32m${PWD1}\033[0m"
 echo -e "Local_port: \033[32m 1080\033[0m"
-echo -e "Method: \033[32m aes-256-cfb \033[0m"
+echo -e "Method: \033[32m aes-256-gcm \033[0m"
 ;;
 	2)
 red='\033[0;31m'
