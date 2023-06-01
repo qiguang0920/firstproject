@@ -8,7 +8,7 @@ fi
 clear
 printf "
 #######################################################################
-#                Install LAMP for CentOS7/8                           #
+#                Install LAMP for CentOS7/8/stream9                   #
 #             More information http://www.iewb.net                    #
 #                         BY:2020-03-16                               #
 #######################################################################
@@ -141,8 +141,8 @@ if [ ! -e /etc/yum.repos.d/MariaDB.repo ];then
 # https://yum.mariadb.org/10.3/centos73-amd64/
 [mariadb]
 name = MariaDB
-baseurl = https://mirrors.ustc.edu.cn/mariadb/yum/$MariaDB_version/centos$os_version_id-amd64
-	https://yum.mariadb.org/$MariaDB_version/centos$os_version_id-amd64
+baseurl = https://mirrors.ustc.edu.cn/mariadb/yum/$MariaDB_version/rhel$os_version_id-amd64
+	https://yum.mariadb.org/$MariaDB_version/rhel$os_version_id-amd64
 gpgkey = https://mirrors.ustc.edu.cn/mariadb/yum/RPM-GPG-KEY-MariaDB
 	https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
 gpgcheck=1
