@@ -73,6 +73,7 @@ while :; do echo
 	echo "1. MariaDB 10.5"
 	echo "2. MariaDB 10.7"
 	echo "3. MariaDB 10.11"
+	echo "4. MariaDB 11.0"	
 	read -t 20 -p "Please choose the MariaDB version :" v1	
 	case "$v1" in
 	1)
@@ -84,9 +85,12 @@ while :; do echo
 	3)
 	MariaDB_version=10.11
 	;;
+	4)
+	MariaDB_version=11.0
+	;;
 	*)
-	 echo "Your choice is not 1-3 ,will be setup MariaDB 10.11"
-	 MariaDB_version=${MariaDB_version:-10.11}
+	 echo "Your choice is not 1-4 ,will be setup MariaDB 11.0"
+	 MariaDB_version=${MariaDB_version:-11.0}
 	;;	 
 esac
 	
