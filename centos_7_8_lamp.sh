@@ -61,7 +61,7 @@ while :; do echo
 	php_version=82
 	;;
 	*)
-	 echo "Your choice is not 1-6 ,will be setup php8.2"
+	 echo "Your choice is not 1-6 ,will be installed php8.2"
 	 php_version=${php_version:-82}
 	;;	 
 esac
@@ -89,7 +89,7 @@ while :; do echo
 	MariaDB_version=11.0
 	;;
 	*)
-	 echo "Your choice is not 1-4 ,will be setup MariaDB 11.0"
+	 echo "Your choice is not 1-4 ,will be installed MariaDB 11.0"
 	 MariaDB_version=${MariaDB_version:-11.0}
 	;;	 
 esac
