@@ -51,7 +51,6 @@ sysctl -p /etc/sysctl.conf
 
 firewall-cmd --add-port=5555/tcp --permanent
 firewall-cmd --add-port=443/tcp --permanent
-firewall-cmd --add-port=31400-31409/tcp --permanent
 firewall-cmd --add-masquerade --permanent
 #firewall-cmd --add-forward-port=port=31400:proto=tcp:toport=31400:toaddr=192.168.30.10 --permanent
 firewall-cmd --reload
