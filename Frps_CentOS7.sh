@@ -1,5 +1,5 @@
 #!/bin/bash
-# Install SoftEther VPN for CentOS7
+# Install Frps for CentOS7
 
 # Check if user is root
 [ $(id -u) != "0" ] && { echo -e "\033[31mError: You must be root to run this script\033[0m"; exit 1; } 
@@ -8,7 +8,7 @@ export PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 clear
 printf "
 #######################################################################
-#            Install SoftEther VPN for CentOS7			              #
+#              Install frps for CentOS		 	  				      #
 #            More information http://www.iewb.net                     #
 #######################################################################
 "
@@ -37,7 +37,6 @@ fi
 sysctl -p /etc/sysctl.conf
 firewall-cmd --add-port=7000/tcp --permanent
 firewall-cmd --add-port=7500/tcp --permanent
-firewall-cmd --add-port=31400-31409/tcp --permanent
 touch /home/frp.sh
 	cat > /home/frp.sh <<EOF
 #!/bin/bash
