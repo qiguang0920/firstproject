@@ -37,6 +37,7 @@ fi
 sysctl -p /etc/sysctl.conf
 firewall-cmd --add-port=7000/tcp --permanent
 firewall-cmd --add-port=7500/tcp --permanent
+firewall-cmd --reload
 touch /home/frp.sh
 	cat > /home/frp.sh <<EOF
 #!/bin/bash
