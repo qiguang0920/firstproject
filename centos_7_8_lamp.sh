@@ -8,13 +8,14 @@ fi
 clear
 printf "
 #######################################################################
-#                Install LAMP for CentOS7/8/stream9                   #
+#                Install LAMP for CentOS/Rocky/		                  #
 #             More information http://www.iewb.net                    #
 #                         BY:2020-03-16                               #
 #######################################################################
 "
 os_name=`awk -F= '/^NAME/{print $2}' /etc/os-release | awk -F'"' '{print $2}'`
 os_version_id=`awk -F= '/^VERSION_ID/{print $2}' /etc/os-release | awk -F'"' '{print $2}'`
+os_version_id2=`awk -F= '/^VERSION_ID/{print $2}' /etc/os-release | awk -F'"' '{print $2}'| awk -F'.' '{print $1}'`
 os_release=`cat /etc/redhat-release`
 os_kernel=`uname -sr`
 echo -e "System-release:\e[1;32m $os_release \e[0m"
@@ -71,26 +72,26 @@ done
 
 while :; do echo
 	echo "1. MariaDB 10.5"
-	echo "2. MariaDB 10.7"
-	echo "3. MariaDB 10.11"
-	echo "4. MariaDB 11.0"	
+	echo "2. MariaDB 11.1"
+	echo "3. MariaDB 11.5"
+	echo "4. MariaDB 11.6"	
 	read -t 20 -p "Please choose the MariaDB version :" v1	
 	case "$v1" in
 	1)
 	MariaDB_version=10.5
 	;;
 	2)
-	MariaDB_version=10.7
+	MariaDB_version=11.1
 	;;
 	3)
-	MariaDB_version=10.11
+	MariaDB_version=11.5
 	;;
 	4)
-	MariaDB_version=11.0
+	MariaDB_version=11.6
 	;;
 	*)
-	 echo "Your choice is not 1-4 ,will be installed MariaDB 11.0"
-	 MariaDB_version=${MariaDB_version:-11.0}
+	 echo "Your choice is not 1-4 ,will be installed MariaDB 11.6"
+	 MariaDB_version=${MariaDB_version:-11.6}
 	;;	 
 esac
 	
@@ -117,22 +118,28 @@ yum clean all
 ##Install PHP
 #rpm -ivh http://rpms.famillecollet.com/enterprise/remi-release-$os_version_id.rpm --force --nodeps 
 rpm -ivh https://mirrors.ustc.edu.cn/remi/enterprise/remi-release-$os_version_id.rpm --force --nodeps 
-if [ "$os_version_id" = "7" ];then
+if [ "$os_version_id2" = "7" ];then
+sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*
+sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
 yum install --enablerepo=remi-php$php_version php php-opcache php-devel php-mbstring php-mcrypt php-mysqlnd php-phpunit-PHPUnit php-bcmath php-gd php-common php-snmp -y && yum install php -y
 sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 8M/g' /etc/php.ini
 sed -i 's/short_open_tag = Off/short_open_tag = ON/g' /etc/php.ini
-else 
-#yum install php php-opcache php-devel php-mbstring php-mysqlnd php-bcmath php-gd php-common -y
-#cd /etc/yum.repos.d
+else if [ "$os_version_id2" = "8" ];then
 sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*
 sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
 dnf install -y --enablerepo=remi php$php_version php$php_version-php-fpm php$php_version-php-cli php$php_version-php-bcmath php$php_version-php-gd php$php_version-php-json php$php_version-php-mbstring php$php_version-php-mcrypt php$php_version-php-mysqlnd php$php_version-php-opcache php$php_version-php-pdo php$php_version-php-pecl-crypto php$php_version-php-pecl-geoip php$php_version-php-snmp php$php_version-php-soap php$php_version-php-xml
 dnf install -y --enablerepo=remi php$php_version-php-pecl-mcrypt 
 sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 8M/g' /etc/opt/remi/php$php_version/php.ini
 sed -i 's/short_open_tag = Off/short_open_tag = ON/g' /etc/opt/remi/php$php_version/php.ini
+else
+dnf install -y --enablerepo=remi php$php_version php$php_version-php-fpm php$php_version-php-cli php$php_version-php-bcmath php$php_version-php-gd php$php_version-php-json php$php_version-php-mbstring php$php_version-php-mcrypt php$php_version-php-mysqlnd php$php_version-php-opcache php$php_version-php-pdo php$php_version-php-pecl-crypto php$php_version-php-pecl-geoip php$php_version-php-snmp php$php_version-php-soap php$php_version-php-xml
+dnf install -y --enablerepo=remi php$php_version-php-pecl-mcrypt 
+sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 8M/g' /etc/opt/remi/php$php_version/php.ini
+sed -i 's/short_open_tag = Off/short_open_tag = ON/g' /etc/opt/remi/php$php_version/php.ini
+fi
+fi
 systemctl enable php$php_version-php-fpm
 systemctl restart php$php_version-php-fpm
-fi
 
 #Install MariaDB
 # Specified apache version
@@ -145,24 +152,20 @@ if [ ! -e /etc/yum.repos.d/MariaDB.repo ];then
 # https://yum.mariadb.org/10.3/centos73-amd64/
 [mariadb]
 name = MariaDB
-baseurl = https://mirrors.ustc.edu.cn/mariadb/yum/$MariaDB_version/rhel$os_version_id-amd64
-	https://yum.mariadb.org/$MariaDB_version/rhel$os_version_id-amd64
+baseurl = https://mirrors.ustc.edu.cn/mariadb/yum/$MariaDB_version/rhel$os_version_id2-amd64
+	https://yum.mariadb.org/$MariaDB_version/rhel$os_version_id2-amd64
 gpgkey = https://mirrors.ustc.edu.cn/mariadb/yum/RPM-GPG-KEY-MariaDB
 	https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
 gpgcheck=1
 EOF
 fi
-if [ "$os_version_id" = "7" ];then
+
 yum install --enablerepo=mariadb mariadb mariadb-server -y
-else
-sed -i 's/centos8-amd64/rhel8-amd64/g' /etc/yum.repos.d/MariaDB.repo
-#yum -y install galera
-#yum -y install galera-4
-dnf module disable mariadb mysql -y
+
 if [ ! -e /var/lib/mysql ];then
-dnf install mariadb mariadb-server -y 
+yum install mariadb mariadb-server -y 
 fi
-fi
+
 #Install Httpd
 yum --enablerepo=epel install libargon2 libmcrypt -y 
 yum install httpd mod_ssl openssl unzip wget -y
