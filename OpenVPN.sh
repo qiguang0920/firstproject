@@ -211,6 +211,7 @@ setenforce 0
 sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config
 chmod +x /etc/openvpn/checkpsw.sh
 
+<<'COMMMENT'
 if [ ! -e /usr/lib/systemd/openvpn@server ];then
 	cat > /usr/lib/systemd/openvpn@server <<EOF
 [Unit]
@@ -231,6 +232,7 @@ EOF
 fi
 systemctl enable openvpn@server
 systemctl start openvpn@server
+COMMMENT
 
 systemctl enable openvpn-server@server
 systemctl start openvpn-server@server
