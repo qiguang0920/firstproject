@@ -132,9 +132,9 @@ tls-crypt /etc/openvpn/server/tc.key
 topology subnet
 #VPN服务端为自己和客户端分配IP的地址池，服务端自己获取网段的第一个地址（这里为10.8.0.1），后为客户端分配其他的可用地址
 server 10.8.0.0 255.255.255.0
-# 服务端推送客户端dhcp分配dns
-push "dhcp-option DNS 8.8.8.8"
-push "dhcp-option DNS 1.1.1.1"
+#服务器所在网络
+;push "route 192.168.10.0 255.255.255.0"
+;push "route 192.168.20.0 255.255.255.0"
 #记录已分配虚拟IP的客户端和虚拟IP的对应关系,以后openvpn重启时,将可以按照此文件继续为对应的客户端分配此前相同的IP
 ifconfig-pool-persist ipp.txt
 # 存活时间，10秒ping一次,120 如未收到响应则视为断线
@@ -163,6 +163,8 @@ if [ $protocol = "udp" ]; then
 	fi
 if [ $global = "yes" ]; then
 		echo 'push "redirect-gateway def1 bypass-dhcp"'>> /etc/openvpn/server.conf
+		echo 'push "dhcp-option DNS 8.8.8.8"'>> /etc/openvpn/server.conf
+		echo 'push "dhcp-option DNS 1.1.1.1"'>> /etc/openvpn/server.conf
 	fi
 	ln /etc/openvpn/server.conf /etc/openvpn/server/server.conf
 #Client
