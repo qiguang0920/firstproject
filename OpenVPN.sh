@@ -78,7 +78,7 @@ SERVER_IP=`ip addr |grep "inet"|grep -v "127.0.0.1"|grep -v "inet6" |cut -d: -f2
 VPN_IP=`curl ipv4.icanhazip.com`
 echo "net.ipv4.ip_forward=1" > /etc/sysctl.conf
 #sed -i '/net.ipv4.ip_forward/s/0/1/' /etc/sysctl.conf
-yum -y install openvpn openssl ca-certificates
+yum -y install openvpn openssl ca-certificates tar
 #download files
 mkdir -p /etc/openvpn/easy-rsa/
 wget -O easyrsa.tgz https://github.com/OpenVPN/easy-rsa/releases/download/v3.2.0/EasyRSA-3.2.0.tgz && tar -zxvf easyrsa.tgz  && mv ./EasyRSA-3.2.0/* /etc/openvpn/easy-rsa/ && rm -rf ./EasyRSA-3.2.0 easyrsa.tgz &&
