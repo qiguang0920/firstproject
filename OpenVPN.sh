@@ -12,6 +12,7 @@ printf "
 #            More information http://www.iewb.net                     #
 #######################################################################
 "
+os_version_id=`awk -F= '/^VERSION_ID/{print $2}' /etc/os-release | awk -F'"' '{print $2}'`
 echo "1. Install OpenVPN Server"
 echo "2. Add OpenVpn Client"
 echo "3. Remove OpenVPN Server"
@@ -80,9 +81,9 @@ echo "net.ipv4.ip_forward=1" > /etc/sysctl.conf
 yum -y install openvpn openssl ca-certificates
 #download files
 mkdir -p /etc/openvpn/easy-rsa/
-wget -O easyrsa.tgz https://github.com/OpenVPN/easy-rsa/releases/download/v3.2.0/EasyRSA-3.2.0.tgz && tar -zxvf easyrsa.tgz  && mv ./EasyRSA-3.2.0/* /etc/openvpn/easy-rsa/ &&rm -rf ./EasyRSA-3.2.0 easyrsa.tgz &&
+wget -O easyrsa.tgz https://github.com/OpenVPN/easy-rsa/releases/download/v3.2.0/EasyRSA-3.2.0.tgz && tar -zxvf easyrsa.tgz  && mv ./EasyRSA-3.2.0/* /etc/openvpn/easy-rsa/ && rm -rf ./EasyRSA-3.2.0 easyrsa.tgz &&
 #下载是否完成
-if [ ! -e '/etc/openvpn/easy-rsa/easyrsa' ]; then echo "Download EasyRSA From Github failed"; exit 1; fi
+if [ ! -e "/etc/openvpn/easy-rsa/easyrsa" ]; then echo "Download EasyRSA From Github failed"; exit 1; fi
 wget -O /etc/openvpn/checkpsw.sh https://raw.githubusercontent.com/qiguang0920/openvpn/master/data/checkpsw.sh 
 touch /etc/openvpn/psw-file
 
@@ -163,8 +164,9 @@ if [ $protocol = "udp" ]; then
 if [ $global = "yes" ]; then
 		echo 'push "redirect-gateway def1 bypass-dhcp"'>> /etc/openvpn/server.conf
 	fi
+	ln /etc/openvpn/server.conf /etc/openvpn/server/server.conf
 #Client
-cat > /etc/openvpn/client.conf  <<EOF
+cat > /etc/openvpn/client.txt  <<EOF
 client
 dev tun
 proto $protocol
@@ -181,20 +183,20 @@ ignore-unknown-option block-outside-dns block-ipv6
 verb 3
 EOF
 
-	cat /etc/openvpn/client.conf
-	echo "<ca>" >>/etc/openvpn/client.conf
-	cat /etc/openvpn/easy-rsa/pki/ca.crt >>/etc/openvpn/client.conf
-	echo "</ca>" >>/etc/openvpn/client.conf
-	echo "<cert>" >>/etc/openvpn/client.conf
-	sed -ne '/BEGIN CERTIFICATE/,$ p' /etc/openvpn/easy-rsa/pki/issued/$Client_Name.crt >>/etc/openvpn/client.conf
-	echo "</cert>" >>/etc/openvpn/client.conf
-	echo "<key>" >>/etc/openvpn/client.conf
-	cat /etc/openvpn/easy-rsa/pki/private/$Client_Name.key >>/etc/openvpn/client.conf
-	echo "</key>" >>/etc/openvpn/client.conf
-	echo "<tls-crypt>" >>/etc/openvpn/client.conf
-	sed -ne '/BEGIN OpenVPN Static key/,$ p' /etc/openvpn/server/tc.key >>/etc/openvpn/client.conf
-	echo "</tls-crypt>" >>/etc/openvpn/client.conf
-	cat /etc/openvpn/client.conf > /etc/openvpn/client/$Client_Name.ovpn
+	cat /etc/openvpn/client.txt
+	echo "<ca>" >>/etc/openvpn/client.txt
+	cat /etc/openvpn/easy-rsa/pki/ca.crt >>/etc/openvpn/client.txt
+	echo "</ca>" >>/etc/openvpn/client.txt
+	echo "<cert>" >>/etc/openvpn/client.txt
+	sed -ne '/BEGIN CERTIFICATE/,$ p' /etc/openvpn/easy-rsa/pki/issued/$Client_Name.crt >>/etc/openvpn/client.txt
+	echo "</cert>" >>/etc/openvpn/client.txt
+	echo "<key>" >>/etc/openvpn/client.txt
+	cat /etc/openvpn/easy-rsa/pki/private/$Client_Name.key >>/etc/openvpn/client.txt
+	echo "</key>" >>/etc/openvpn/client.txt
+	echo "<tls-crypt>" >>/etc/openvpn/client.txt
+	sed -ne '/BEGIN OpenVPN Static key/,$ p' /etc/openvpn/server/tc.key >>/etc/openvpn/client.txt
+	echo "</tls-crypt>" >>/etc/openvpn/client.txt
+	cat /etc/openvpn/client.txt > /etc/openvpn/client/$Client_Name.ovpn
 	chmod 600 /etc/openvpn/client/$Client_Name.ovpn
 
 #
@@ -208,6 +210,7 @@ firewall-cmd --reload
 setenforce 0
 sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config
 chmod +x /etc/openvpn/checkpsw.sh
+
 if [ ! -e /usr/lib/systemd/openvpn@server ];then
 	cat > /usr/lib/systemd/openvpn@server <<EOF
 [Unit]
@@ -228,6 +231,11 @@ EOF
 fi
 systemctl enable openvpn@server
 systemctl start openvpn@server
+
+systemctl enable openvpn-server@server
+systemctl start openvpn-server@server
+
+
 clear
 echo -e "\033[32mYour OpenVPN installed successfully\033[0m"
 echo -e "your external IP \033[32m${VPN_IP}\033[0m"
@@ -271,7 +279,7 @@ cd /etc/openvpn/easy-rsa/ || exit 1
 ./easyrsa --batch --days=3650 build-client-full $Client_Name nopass >/dev/null 2>&1
 	)
 VPN_IP=`curl ipv4.icanhazip.com`
-cat > /etc/openvpn/client.conf  <<EOF
+cat > /etc/openvpn/client.txt  <<EOF
 client
 dev tun
 proto $protocol
@@ -287,24 +295,24 @@ cipher AES-256-GCM
 ignore-unknown-option block-outside-dns block-ipv6
 verb 3
 EOF
-	cat /etc/openvpn/client.conf
-	echo "<ca>" >>/etc/openvpn/client.conf
-	cat /etc/openvpn/easy-rsa/pki/ca.crt >>/etc/openvpn/client.conf
-	echo "</ca>" >>/etc/openvpn/client.conf
-	echo "<cert>" >>/etc/openvpn/client.conf
-	sed -ne '/BEGIN CERTIFICATE/,$ p' /etc/openvpn/easy-rsa/pki/issued/$Client_Name.crt >>/etc/openvpn/client.conf
-	echo "</cert>" >>/etc/openvpn/client.conf
-	echo "<key>" >>/etc/openvpn/client.conf
-	cat /etc/openvpn/easy-rsa/pki/private/$Client_Name.key >>/etc/openvpn/client.conf
-	echo "</key>" >>/etc/openvpn/client.conf
-	echo "<tls-crypt>" >>/etc/openvpn/client.conf
-	sed -ne '/BEGIN OpenVPN Static key/,$ p' /etc/openvpn/server/tc.key >>/etc/openvpn/client.conf
-	echo "</tls-crypt>" >>/etc/openvpn/client.conf
-	cat /etc/openvpn/client.conf > /etc/openvpn/client/$Client_Name.ovpn
+	cat /etc/openvpn/client.txt
+	echo "<ca>" >>/etc/openvpn/client.txt
+	cat /etc/openvpn/easy-rsa/pki/ca.crt >>/etc/openvpn/client.txt
+	echo "</ca>" >>/etc/openvpn/client.txt
+	echo "<cert>" >>/etc/openvpn/client.txt
+	sed -ne '/BEGIN CERTIFICATE/,$ p' /etc/openvpn/easy-rsa/pki/issued/$Client_Name.crt >>/etc/openvpn/client.txt
+	echo "</cert>" >>/etc/openvpn/client.txt
+	echo "<key>" >>/etc/openvpn/client.txt
+	cat /etc/openvpn/easy-rsa/pki/private/$Client_Name.key >>/etc/openvpn/client.txt
+	echo "</key>" >>/etc/openvpn/client.txt
+	echo "<tls-crypt>" >>/etc/openvpn/client.txt
+	sed -ne '/BEGIN OpenVPN Static key/,$ p' /etc/openvpn/server/tc.key >>/etc/openvpn/client.txt
+	echo "</tls-crypt>" >>/etc/openvpn/client.txt
+	cat /etc/openvpn/client.txt > /etc/openvpn/client/$Client_Name.ovpn
 	chmod 600 /etc/openvpn/client/$Client_Name.ovpn
 ;;
 3)
-yum remove openvpn -y && rm -rf /etc/openvpn	
+yum remove openvpn -y && rm -rf /etc/openvpn /usr/lib/systemd/openvpn@server	
 ;;
 *)
 echo "Please choose a right item."
