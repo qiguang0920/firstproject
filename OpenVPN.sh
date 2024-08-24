@@ -152,7 +152,7 @@ max-clients 50
 ;push "route 192.168.10.0 255.255.255.0"
 ;push "route 192.168.20.0 255.255.255.0"
 #配置密码认证，客户端需同时开启
-;auth-user-pass-verify /etc/openvpn/server/checkpsw.sh via-env
+;auth-user-pass-verify /etc/openvpn/checkpsw.sh via-env
 ;username-as-common-name
 ;script-security 3
 ;client-cert-not-required
