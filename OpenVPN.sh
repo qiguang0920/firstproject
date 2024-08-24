@@ -242,10 +242,10 @@ systemctl start openvpn-server@server
 
 
 clear
-	echo -e "\033[32mYour OpenVPN installed successfully\033[0m"
-	echo -e "your external IP \033[32m${VPN_IP}\033[0m"
-	echo -e "protoco: \033[32m${protoco}\033[0m; Port: \033[32m${Port}\033[0m; "
-	echo -e "The Client Configuration File in \033[32m/etc/openvpn/client/$Client_Name.ovpn\033[0m"
+	echo -e "\033[32mOpenVPN Server Installation Complete.\033[0m"
+	echo -e "External IP: \033[32m${VPN_IP}\033[0m"
+	echo -e "Protocol:\033[32m${protocol}\033[0m  Port: \033[32m${Port}\033[0m"
+	echo -e "Client Configuration File: \033[32m/etc/openvpn/client/$Client_Name.ovpn\033[0m"
 ;;
 
 2)
@@ -319,7 +319,9 @@ EOF
 	chmod 600 /etc/openvpn/client/$Client_Name.ovpn
 	
 	clear
-	echo -e "The Client Configuration File in \033[32m/etc/openvpn/client/$Client_Name.ovpn\033[0m"
+	echo -e "External IP: \033[32m${VPN_IP}\033[0m"
+	echo -e "Protocol:\033[32m${protocol}\033[0m  Port: \033[32m${Port}\033[0m"
+	echo -e "Client Configuration File: \033[32m/etc/openvpn/client/$Client_Name.ovpn\033[0m"
 ;;
 3)
 yum remove openvpn -y && rm -rf /etc/openvpn /usr/lib/systemd/openvpn@server	
