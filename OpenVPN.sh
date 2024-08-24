@@ -8,7 +8,7 @@ export PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 clear
 printf "
 #######################################################################
-#            Installs OpenVPN for CentOS7                             #
+#            Installs OpenVPN for CentOS/Rocky/AlmaLinux              #
 #            More information http://www.iewb.net                     #
 #######################################################################
 "
