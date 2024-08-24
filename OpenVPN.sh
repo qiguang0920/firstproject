@@ -67,7 +67,7 @@ while :; do echo
     [ -n "$Port" ] && break
 done
 while :; do echo
-    read -t 20 -p "Please input Client Name: " Client_Name
+    read -t 20 -p "Please input Client Configuration Name: " Client_Name
 	Client_Name=${Client_Name:-Client}
     [ -n "$Client_Name" ] && break
 done	
@@ -132,9 +132,6 @@ tls-crypt /etc/openvpn/server/tc.key
 topology subnet
 #VPN服务端为自己和客户端分配IP的地址池，服务端自己获取网段的第一个地址（这里为10.8.0.1），后为客户端分配其他的可用地址
 server 10.8.0.0 255.255.255.0
-#服务器所在网络
-;push "route 192.168.10.0 255.255.255.0"
-;push "route 192.168.20.0 255.255.255.0"
 #记录已分配虚拟IP的客户端和虚拟IP的对应关系,以后openvpn重启时,将可以按照此文件继续为对应的客户端分配此前相同的IP
 ifconfig-pool-persist ipp.txt
 # 存活时间，10秒ping一次,120 如未收到响应则视为断线
@@ -151,6 +148,9 @@ verb 3
 crl-verify /etc/openvpn/server/crl.pem
 #最多连接客户端数量
 max-clients 50
+#服务器所在网络
+;push "route 192.168.10.0 255.255.255.0"
+;push "route 192.168.20.0 255.255.255.0"
 #配置密码认证，客户端需同时开启
 ;auth-user-pass-verify /etc/openvpn/server/checkpsw.sh via-env
 ;username-as-common-name
@@ -212,6 +212,7 @@ firewall-cmd --reload
 setenforce 0
 sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config
 chmod +x /etc/openvpn/checkpsw.sh
+chmod 777 /etc/openvpn/psw-file
 
 <<'COMMMENT'
 if [ ! -e /usr/lib/systemd/openvpn@server ];then
@@ -241,8 +242,10 @@ systemctl start openvpn-server@server
 
 
 clear
-echo -e "\033[32mYour OpenVPN installed successfully\033[0m"
-echo -e "your external IP \033[32m${VPN_IP}\033[0m"
+	echo -e "\033[32mYour OpenVPN installed successfully\033[0m"
+	echo -e "your external IP \033[32m${VPN_IP}\033[0m"
+	echo -e "protoco: \033[32m${protoco}\033[0m; Port: \033[32m${Port}\033[0m; "
+	echo -e "The Client Configuration File in \033[32m/etc/openvpn/client/$Client_Name.ovpn\033[0m"
 ;;
 
 2)
@@ -314,6 +317,9 @@ EOF
 	echo "</tls-crypt>" >>/etc/openvpn/client.txt
 	cat /etc/openvpn/client.txt > /etc/openvpn/client/$Client_Name.ovpn
 	chmod 600 /etc/openvpn/client/$Client_Name.ovpn
+	
+	clear
+	echo -e "The Client Configuration File in \033[32m/etc/openvpn/client/$Client_Name.ovpn\033[0m"
 ;;
 3)
 yum remove openvpn -y && rm -rf /etc/openvpn /usr/lib/systemd/openvpn@server	
