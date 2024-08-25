@@ -14,7 +14,7 @@ printf "
 "
 os_version_id=`awk -F= '/^VERSION_ID/{print $2}' /etc/os-release | awk -F'"' '{print $2}'`
 echo "1. Install OpenVPN Server"
-echo "2. Add OpenVpn Client"
+echo "2. Add OpenVPN Client"
 echo "3. Remove OpenVPN Server"
 read -p "Please choose what you want to do: " i
 case "$i" in
