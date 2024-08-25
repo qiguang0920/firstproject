@@ -1,5 +1,5 @@
 #!/bin/bash
-# Installs a  OpenVPN-only system for CentOS7
+# Install OpenVPN for CentOS/Rocky/AlmaLinux
 
 # Check if user is root
 [ $(id -u) != "0" ] && { echo -e "\033[31mError: You must be root to run this script\033[0m"; exit 1; } 
@@ -84,7 +84,7 @@ mkdir -p /etc/openvpn/easy-rsa/
 wget -O easyrsa.tgz https://github.com/OpenVPN/easy-rsa/releases/download/v3.2.0/EasyRSA-3.2.0.tgz && tar -zxvf easyrsa.tgz  && mv ./EasyRSA-3.2.0/* /etc/openvpn/easy-rsa/ && rm -rf ./EasyRSA-3.2.0 easyrsa.tgz &&
 #下载是否完成
 if [ ! -e "/etc/openvpn/easy-rsa/easyrsa" ]; then echo "Download EasyRSA From Github failed"; exit 1; fi
-wget -O /etc/openvpn/checkpsw.sh https://raw.githubusercontent.com/qiguang0920/openvpn/master/data/checkpsw.sh 
+wget -O /etc/openvpn/checkpsw.sh https://raw.githubusercontent.com/qiguang0920/openvpn/master/data/checkpsw.sh
 touch /etc/openvpn/psw-file
 
 #easy-rsa
@@ -239,7 +239,6 @@ COMMMENT
 
 systemctl enable openvpn-server@server
 systemctl start openvpn-server@server
-
 
 clear
 	echo -e "\033[32mOpenVPN Server Installation Complete.\033[0m"
