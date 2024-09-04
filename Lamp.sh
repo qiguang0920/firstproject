@@ -37,10 +37,10 @@ done
 while :; do echo
 	echo "1. PHP5.4"
 	echo "2. PHP7.2"
-	echo "3. PHP7.3"
-	echo "4. PHP7.4"
-	echo "5. PHP8.1"
-	echo "6. PHP8.2"
+	echo "3. PHP7.4"
+	echo "4. PHP8.1"
+	echo "5. PHP8.2"
+	echo "6. PHP8.3"
 	read -t 20 -p "Please choose the PHP version :" v	
 	case "$v" in
 	1)
@@ -50,20 +50,20 @@ while :; do echo
 	php_version=72
 	;;
 	3)
-	php_version=73
-	;;
-	4)
 	php_version=74
 	;;
-	5)
+	4)
 	php_version=81
 	;;
-	6)
+	5)
 	php_version=82
 	;;
+	6)
+	php_version=83
+	;;
 	*)
-	 echo "Your choice is not 1-6 ,will be installed php8.2"
-	 php_version=${php_version:-82}
+	 echo "Your choice is not 1-6 ,will be installed php8.3"
+	 php_version=${php_version:-83}
 	;;	 
 esac
 	
