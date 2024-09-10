@@ -25,10 +25,10 @@ else
 echo "/etc/named.confnot found,maybe bind install false."
 fi
 if [ -e /etc/named.rfc1912.zones ];then
-sed -i '24a\zone "test.com" IN {' /etc/named.rfc1912.zones
-sed -i '25a\        type master;' /etc/named.rfc1912.zones
-sed -i '26a\        file "test.com.zone";' /etc/named.rfc1912.zones
-sed -i '27a\};' /etc/named.rfc1912.zones
+sed -i '$a\zone "test.com" IN {' /etc/named.rfc1912.zones
+sed -i '$a\        type master;' /etc/named.rfc1912.zones
+sed -i '$a\        file "test.com.zone";' /etc/named.rfc1912.zones
+sed -i '$a\};' /etc/named.rfc1912.zones
 sed -i '$a\zone "88.16.172.in-addr.arpa" IN {' /etc/named.rfc1912.zones
 sed -i '$a\        type master;' /etc/named.rfc1912.zones
 sed -i '$a\    file "172.16.88.zone";' /etc/named.rfc1912.zones
