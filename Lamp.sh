@@ -28,6 +28,7 @@ case "$i" in
 	1)
 dbpasswd="admin888"
 public_dir="/Data/Public_Root"
+domain="test.com"
 while :; do echo
     read -t 20 -p "Please input your domain,if haven't,input [test.com]: " domain
 	domain=${domain:-test.com}
@@ -165,9 +166,7 @@ fi
 yum --enablerepo=epel install libargon2 libmcrypt -y 
 yum install httpd mod_ssl openssl unzip wget -y
 
-
-
-mkdir /Data && mkdir $public_dir &&mkdir $public_dir/$domain &&mkdir $public_dir/$domain/public_html &&mkdir $public_dir/$domain/logs
+mkdir -p $public_dir/$domain &&mkdir $public_dir/$domain/public_html &&mkdir $public_dir/$domain/logs
 if [ ! -e $public_dir/$domain/public_html/index.php ];then
         cat > $public_dir/$domain/public_html/index.php << EOF
 <title>LAMP Test Page!</title>
