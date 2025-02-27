@@ -119,7 +119,8 @@ yum clean all
 #rpm -ivh http://rpms.famillecollet.com/enterprise/remi-release-$os_version_id.rpm --force --nodeps 
 
 if [ "$os_version_id2" = "7" ];then
-rpm -ivh https://mirrors.ustc.edu.cn/remi/enterprise/remi-release-$os_version_id.rpm --force --nodeps
+#rpm -ivh https://mirrors.ustc.edu.cn/remi/enterprise/remi-release-$os_version_id.rpm --force --nodeps
+rpm -ivh http://rpms.famillecollet.com/enterprise/remi-release-$os_version_id.rpm --force --nodeps
 sed -i 's/mirrorlist=/#mirrorlist=/g' /etc/yum.repos.d/CentOS-*
 sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
 yum install --enablerepo=remi-php$php_version php php-opcache php-devel php-mbstring php-mcrypt php-mysqlnd php-phpunit-PHPUnit php-bcmath php-gd php-common php-snmp -y && yum install php -y
@@ -127,7 +128,8 @@ sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 8M/g' /etc/php.ini
 sed -i 's/short_open_tag = Off/short_open_tag = ON/g' /etc/php.ini
 
 else
-rpm -ivh https://mirrors.ustc.edu.cn/remi/enterprise/remi-release-$os_version_id.rpm --force --nodeps
+rpm -ivh http://rpms.famillecollet.com/enterprise/remi-release-$os_version_id.rpm --force --nodeps
+#rpm -ivh https://mirrors.ustc.edu.cn/remi/enterprise/remi-release-$os_version_id.rpm --force --nodeps
 dnf install -y --enablerepo=remi php$php_version php$php_version-php-fpm php$php_version-php-cli php$php_version-php-bcmath php$php_version-php-gd php$php_version-php-json php$php_version-php-mbstring php$php_version-php-mcrypt php$php_version-php-mysqlnd php$php_version-php-opcache php$php_version-php-pdo php$php_version-php-pecl-crypto php$php_version-php-pecl-geoip php$php_version-php-snmp php$php_version-php-soap php$php_version-php-xml
 dnf install -y --enablerepo=remi php$php_version-php-pecl-mcrypt 
 sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 8M/g' /etc/opt/remi/php$php_version/php.ini
