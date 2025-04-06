@@ -15,7 +15,8 @@ printf "
 os_version_id=`awk -F= '/^VERSION_ID/{print $2}' /etc/os-release | awk -F'"' '{print $2}'`
 echo "1. Install OpenVPN Server"
 echo "2. Add OpenVPN Client"
-echo "3. Remove OpenVPN Server"
+echo "3. Uninstall OpenVPN Server"
+echo "4. Revoke OpenVPN Client"
 read -p "Please choose what you want to do: " i
 case "$i" in
 	1)
@@ -85,6 +86,7 @@ wget -O easyrsa.tgz https://github.com/OpenVPN/easy-rsa/releases/download/v3.2.0
 #下载是否完成
 if [ ! -e "/etc/openvpn/easy-rsa/easyrsa" ]; then echo "Download EasyRSA From Github failed"; exit 1; fi
 wget -O /etc/openvpn/checkpsw.sh https://raw.githubusercontent.com/qiguang0920/openvpn/master/data/checkpsw.sh
+if [ ! -e "/etc/openvpn/checkpsw.sh" ]; then echo "Download checkpsw.sh From Github failed"; exit 1; fi
 touch /etc/openvpn/psw-file
 
 #easy-rsa
@@ -248,13 +250,25 @@ clear
 ;;
 
 2)
-Client_Name="Client2"
 protoco="udp"
 Port="1194"
 while :; do echo
     read -t 20 -p "Please input Client Name: " Client_Name
-	Client_Name=${Client_Name:-Client2}
+	while [ -z "$Client_Name" ] ;do 
+				echo " Empty name is not allowed." 
+				exit
+				done			
+	while [[ -z "$Client_Name" || -e /etc/openvpn/easy-rsa/pki/issued/"$Client_Name".crt ]]; do
+				echo "$Client_Name: Existing name." 
+				exit
+				done
+Rclient=$(tail -n +2 /etc/openvpn/easy-rsa/pki/index.txt | grep "^R" | cut -d '=' -f 2 | nl -s ') ')
+	if [[ $Rclient == *$Client_Name* ]]; then
+	echo "$Client_Name: Revoked name."
+	exit
+	fi			
     [ -n "$Client_Name" ] && break
+	
 done
 while :; do echo
 	echo "1. udp"
@@ -325,6 +339,32 @@ EOF
 3)
 yum remove openvpn -y && rm -rf /etc/openvpn /usr/lib/systemd/openvpn@server	
 ;;
+4)
+			Numclient=$(tail -n +2 /etc/openvpn/easy-rsa/pki/index.txt | grep -c "^V")
+			echo "Select the Client to revoke:"
+			tail -n +2 /etc/openvpn/easy-rsa/pki/index.txt | grep "^V" | cut -d '=' -f 2 | nl -s ') '
+			read -rp "Client: " Clientnum
+			[ -z "$Clientnum" ] && exit
+			until [[ "$Clientnum" =~ ^[0-9]+$ && "$Clientnum" -le "$Numclient" ]]; do
+				echo "$Clientnum: invalid selection."  && exit
+				read -rp "Client: " Clientnum
+				[ -z "$Clientnum" ] && exit
+			done
+			Client=$(tail -n +2 /etc/openvpn/easy-rsa/pki/index.txt | grep "^V" | cut -d '=' -f 2 | sed -n "$Clientnum"p)
+			echo "Revoking $Client..."
+			cd /etc/openvpn/easy-rsa/ || exit 1
+			(
+					set -x
+					./easyrsa --batch revoke "$Client" >/dev/null 2>&1
+					./easyrsa --batch --days=3650 gen-crl >/dev/null 2>&1
+			)
+			rm -f /etc/openvpn/server/crl.pem
+			cp /etc/openvpn/easy-rsa/pki/crl.pem /etc/openvpn/server/crl.pem				
+			echo "$Client revoked!"
+			exit
+		;;
+
 *)
 echo "Please choose a right item."
 esac
+
