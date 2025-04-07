@@ -262,11 +262,11 @@ while :; do echo
 				echo "$Client_Name: Existing name." 
 				exit
 				done
-Rclient=$(tail -n +2 /etc/openvpn/easy-rsa/pki/index.txt | grep "^R" | cut -d '=' -f 2 | nl -s ') ')
-	if [[ $Rclient == *$Client_Name* ]]; then
-	echo "$Client_Name: Revoked name."
-	exit
-	fi			
+#Rclient=$(tail -n +2 /etc/openvpn/easy-rsa/pki/index.txt | grep "^R" | cut -d '=' -f 2 | nl -s ') ')
+#	if [[ $Rclient == *$Client_Name* ]]; then
+#	echo "$Client_Name: Revoked name."
+#	exit
+#	fi			
     [ -n "$Client_Name" ] && break
 	
 done
@@ -358,7 +358,8 @@ yum remove openvpn -y && rm -rf /etc/openvpn /usr/lib/systemd/openvpn@server
 					./easyrsa --batch revoke "$Client" >/dev/null 2>&1
 					./easyrsa --batch --days=3650 gen-crl >/dev/null 2>&1
 			)
-			rm -f /etc/openvpn/server/crl.pem
+			rm -f /etc/openvpn/easy-rsa/pki/reqs/$Client.req
+			rm -f /etc/openvpn/server/crl.pem		
 			cp /etc/openvpn/easy-rsa/pki/crl.pem /etc/openvpn/server/crl.pem				
 			echo "$Client revoked!"
 			exit
