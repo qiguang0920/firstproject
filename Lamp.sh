@@ -39,7 +39,7 @@ while :; do echo
 	echo "1. PHP5.4"
 	echo "2. PHP7.2"
 	echo "3. PHP7.4"
-	echo "4. PHP8.0"
+	echo "4. PHP8.1"
 	echo "5. PHP8.2"
 	echo "6. PHP8.3"
 	read -t 20 -p "Please choose the PHP version :" v	
@@ -54,7 +54,7 @@ while :; do echo
 	php_version=74
 	;;
 	4)
-	php_version=80
+	php_version=81
 	;;
 	5)
 	php_version=82
@@ -72,27 +72,27 @@ esac
 done
 
 while :; do echo
-	echo "1. MariaDB 10.5"
-	echo "2. MariaDB 10.11"
-	echo "3. MariaDB 11.5"
-	echo "4. MariaDB 11.7"
+	echo "1. MariaDB 10.11"
+	echo "2. MariaDB 11.8"
+	echo "3. MariaDB 11.rc"
+	echo "4. MariaDB 12.rc"	
 	read -t 20 -p "Please choose the MariaDB version :" v1	
 	case "$v1" in
 	1)
-	MariaDB_version=10.5
-	;;
-	2)
 	MariaDB_version=10.11
 	;;
+	2)
+	MariaDB_version=11.8
+	;;
 	3)
-	MariaDB_version=11.5
+	MariaDB_version=11.rc
 	;;
 	4)
-	MariaDB_version=11.7
+	MariaDB_version=12.rc
 	;;
 	*)
-	 echo "Your choice is not 1-4 ,will be installed MariaDB 11.7"
-	 MariaDB_version=${MariaDB_version:-11.7}
+	 echo "Your choice is not 1-4 ,will be installed MariaDB 12.rc"
+	 MariaDB_version=${MariaDB_version:-12.rc}
 	;;	 
 esac
 	
@@ -119,17 +119,15 @@ yum clean all
 #rpm -ivh http://rpms.famillecollet.com/enterprise/remi-release-$os_version_id.rpm --force --nodeps 
 
 if [ "$os_version_id2" = "7" ];then
-#rpm -ivh https://mirrors.ustc.edu.cn/remi/enterprise/remi-release-$os_version_id.rpm --force --nodeps
-rpm -ivh http://rpms.famillecollet.com/enterprise/remi-release-$os_version_id.rpm --force --nodeps
 sed -i 's/mirrorlist=/#mirrorlist=/g' /etc/yum.repos.d/CentOS-*
 sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
+rpm -ivh https://mirrors.ustc.edu.cn/remi/enterprise/remi-release-$os_version_id.rpm --force --nodeps 
 yum install --enablerepo=remi-php$php_version php php-opcache php-devel php-mbstring php-mcrypt php-mysqlnd php-phpunit-PHPUnit php-bcmath php-gd php-common php-snmp -y && yum install php -y
 sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 8M/g' /etc/php.ini
 sed -i 's/short_open_tag = Off/short_open_tag = ON/g' /etc/php.ini
 
 else
-rpm -ivh http://rpms.famillecollet.com/enterprise/remi-release-$os_version_id.rpm --force --nodeps
-#rpm -ivh https://mirrors.ustc.edu.cn/remi/enterprise/remi-release-$os_version_id.rpm --force --nodeps
+rpm -ivh https://mirrors.ustc.edu.cn/remi/enterprise/remi-release-$os_version_id.rpm --force --nodeps 
 dnf install -y --enablerepo=remi php$php_version php$php_version-php-fpm php$php_version-php-cli php$php_version-php-bcmath php$php_version-php-gd php$php_version-php-json php$php_version-php-mbstring php$php_version-php-mcrypt php$php_version-php-mysqlnd php$php_version-php-opcache php$php_version-php-pdo php$php_version-php-pecl-crypto php$php_version-php-pecl-geoip php$php_version-php-snmp php$php_version-php-soap php$php_version-php-xml
 dnf install -y --enablerepo=remi php$php_version-php-pecl-mcrypt 
 sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 8M/g' /etc/opt/remi/php$php_version/php.ini
@@ -150,10 +148,8 @@ if [ ! -e /etc/yum.repos.d/MariaDB.repo ];then
 # https://yum.mariadb.org/10.3/centos73-amd64/
 [mariadb]
 name = MariaDB
-baseurl = https://mirrors.ustc.edu.cn/mariadb/yum/$MariaDB_version/rhel$os_version_id2-amd64
-	https://yum.mariadb.org/$MariaDB_version/rhel$os_version_id2-amd64
-gpgkey = https://mirrors.ustc.edu.cn/mariadb/yum/RPM-GPG-KEY-MariaDB
-	https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
+baseurl = https://yum.mariadb.org/$MariaDB_version/rhel$os_version_id2-amd64
+gpgkey = https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
 gpgcheck=1
 EOF
 fi
