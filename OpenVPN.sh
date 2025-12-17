@@ -79,6 +79,7 @@ SERVER_IP=`ip addr |grep "inet"|grep -v "127.0.0.1"|grep -v "inet6" |cut -d: -f2
 VPN_IP=`curl ipv4.icanhazip.com`
 echo "net.ipv4.ip_forward=1" > /etc/sysctl.conf
 #sed -i '/net.ipv4.ip_forward/s/0/1/' /etc/sysctl.conf
+sysctl -p /etc/sysctl.conf
 yum -y install openvpn openssl ca-certificates tar
 #download files
 mkdir -p /etc/openvpn/easy-rsa/
@@ -146,6 +147,8 @@ persist-key
 persist-tun
 # 日志级别
 verb 3
+# 日志文件路径
+log-append /var/log/openvpn.log
 # 证书吊销，当特定密钥被泄露但整体 PKI 仍然完好无损时使用
 crl-verify /etc/openvpn/server/crl.pem
 #最多连接客户端数量
@@ -187,20 +190,19 @@ ignore-unknown-option block-outside-dns block-ipv6
 verb 3
 EOF
 
-	cat /etc/openvpn/client.txt
-	echo "<ca>" >>/etc/openvpn/client.txt
-	cat /etc/openvpn/easy-rsa/pki/ca.crt >>/etc/openvpn/client.txt
-	echo "</ca>" >>/etc/openvpn/client.txt
-	echo "<cert>" >>/etc/openvpn/client.txt
-	sed -ne '/BEGIN CERTIFICATE/,$ p' /etc/openvpn/easy-rsa/pki/issued/$Client_Name.crt >>/etc/openvpn/client.txt
-	echo "</cert>" >>/etc/openvpn/client.txt
-	echo "<key>" >>/etc/openvpn/client.txt
-	cat /etc/openvpn/easy-rsa/pki/private/$Client_Name.key >>/etc/openvpn/client.txt
-	echo "</key>" >>/etc/openvpn/client.txt
-	echo "<tls-crypt>" >>/etc/openvpn/client.txt
-	sed -ne '/BEGIN OpenVPN Static key/,$ p' /etc/openvpn/server/tc.key >>/etc/openvpn/client.txt
-	echo "</tls-crypt>" >>/etc/openvpn/client.txt
 	cat /etc/openvpn/client.txt > /etc/openvpn/client/$Client_Name.ovpn
+	echo "<ca>" >>/etc/openvpn/client/$Client_Name.ovpn
+	cat /etc/openvpn/easy-rsa/pki/ca.crt >>/etc/openvpn/client/$Client_Name.ovpn
+	echo "</ca>" >>/etc/openvpn/client/$Client_Name.ovpn
+	echo "<cert>" >>/etc/openvpn/client/$Client_Name.ovpn
+	sed -ne '/BEGIN CERTIFICATE/,$ p' /etc/openvpn/easy-rsa/pki/issued/$Client_Name.crt >>/etc/openvpn/client/$Client_Name.ovpn
+	echo "</cert>" >>/etc/openvpn/client/$Client_Name.ovpn
+	echo "<key>" >>/etc/openvpn/client/$Client_Name.ovpn
+	cat /etc/openvpn/easy-rsa/pki/private/$Client_Name.key >>/etc/openvpn/client/$Client_Name.ovpn
+	echo "</key>" >>/etc/openvpn/client/$Client_Name.ovpn
+	echo "<tls-crypt>" >>/etc/openvpn/client/$Client_Name.ovpn
+	sed -ne '/BEGIN OpenVPN Static key/,$ p' /etc/openvpn/server/tc.key >>/etc/openvpn/client/$Client_Name.ovpn
+	echo "</tls-crypt>" >>/etc/openvpn/client/$Client_Name.ovpn	
 	chmod 600 /etc/openvpn/client/$Client_Name.ovpn
 
 #
@@ -250,8 +252,6 @@ clear
 ;;
 
 2)
-protoco="udp"
-Port="1194"
 while :; do echo
     read -t 20 -p "Please input Client Name: " Client_Name
 	while [ -z "$Client_Name" ] ;do 
@@ -270,70 +270,28 @@ while :; do echo
     [ -n "$Client_Name" ] && break
 	
 done
-while :; do echo
-	echo "1. udp"
-	echo "2. tcp"
-	read -t 20 -p "Please choose the protocol :" v	
-	case "$v" in
-	1)
-	protocol=udp
-	;;
-	2)
-	protocol=tcp
-	;;
-	*)
-	 echo "your choice is not 1-2, protocol will be default udp"
-	 protocol=${protocol:-udp}
-	;;	 
-esac	
-[ -n "protocol" ] && break
-done
-while :; do echo
-    read -t 20 -p "Please input VPN Server Port: " Port
-	Port=${Port:-1194}
-    [ -n "$Port" ] && break
-done
-
+VPN_IP=`curl ipv4.icanhazip.com`
 cd /etc/openvpn/easy-rsa/ || exit 1
 	(	
 ./easyrsa --batch --days=3650 build-client-full $Client_Name nopass >/dev/null 2>&1
 	)
-VPN_IP=`curl ipv4.icanhazip.com`
-cat > /etc/openvpn/client.txt  <<EOF
-client
-dev tun
-proto $protocol
-remote $VPN_IP $Port
-resolv-retry infinite
-nobind
-persist-key
-persist-tun
-remote-cert-tls server
-auth SHA256
-cipher AES-256-GCM
-;auth-user-pass
-ignore-unknown-option block-outside-dns block-ipv6
-verb 3
-EOF
-	cat /etc/openvpn/client.txt
-	echo "<ca>" >>/etc/openvpn/client.txt
-	cat /etc/openvpn/easy-rsa/pki/ca.crt >>/etc/openvpn/client.txt
-	echo "</ca>" >>/etc/openvpn/client.txt
-	echo "<cert>" >>/etc/openvpn/client.txt
-	sed -ne '/BEGIN CERTIFICATE/,$ p' /etc/openvpn/easy-rsa/pki/issued/$Client_Name.crt >>/etc/openvpn/client.txt
-	echo "</cert>" >>/etc/openvpn/client.txt
-	echo "<key>" >>/etc/openvpn/client.txt
-	cat /etc/openvpn/easy-rsa/pki/private/$Client_Name.key >>/etc/openvpn/client.txt
-	echo "</key>" >>/etc/openvpn/client.txt
-	echo "<tls-crypt>" >>/etc/openvpn/client.txt
-	sed -ne '/BEGIN OpenVPN Static key/,$ p' /etc/openvpn/server/tc.key >>/etc/openvpn/client.txt
-	echo "</tls-crypt>" >>/etc/openvpn/client.txt
 	cat /etc/openvpn/client.txt > /etc/openvpn/client/$Client_Name.ovpn
+	echo "<ca>" >>/etc/openvpn/client/$Client_Name.ovpn
+	cat /etc/openvpn/easy-rsa/pki/ca.crt >>/etc/openvpn/client/$Client_Name.ovpn
+	echo "</ca>" >>/etc/openvpn/client/$Client_Name.ovpn
+	echo "<cert>" >>/etc/openvpn/client/$Client_Name.ovpn
+	sed -ne '/BEGIN CERTIFICATE/,$ p' /etc/openvpn/easy-rsa/pki/issued/$Client_Name.crt >>/etc/openvpn/client/$Client_Name.ovpn
+	echo "</cert>" >>/etc/openvpn/client/$Client_Name.ovpn
+	echo "<key>" >>/etc/openvpn/client/$Client_Name.ovpn
+	cat /etc/openvpn/easy-rsa/pki/private/$Client_Name.key >>/etc/openvpn/client/$Client_Name.ovpn
+	echo "</key>" >>/etc/openvpn/client/$Client_Name.ovpn
+	echo "<tls-crypt>" >>/etc/openvpn/client/$Client_Name.ovpn
+	sed -ne '/BEGIN OpenVPN Static key/,$ p' /etc/openvpn/server/tc.key >>/etc/openvpn/client/$Client_Name.ovpn
+	echo "</tls-crypt>" >>/etc/openvpn/client/$Client_Name.ovpn
 	chmod 600 /etc/openvpn/client/$Client_Name.ovpn
 	
 	clear
 	echo -e "External IP: \033[32m${VPN_IP}\033[0m"
-	echo -e "Protocol:\033[32m${protocol}\033[0m  Port: \033[32m${Port}\033[0m"
 	echo -e "Client Configuration File: \033[32m/etc/openvpn/client/$Client_Name.ovpn\033[0m"
 ;;
 3)
@@ -368,4 +326,3 @@ yum remove openvpn -y && rm -rf /etc/openvpn /usr/lib/systemd/openvpn@server
 *)
 echo "Please choose a right item."
 esac
-
