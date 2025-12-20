@@ -118,6 +118,8 @@ touch /etc/systemd/system/shadowsocks.service
 EOF
 
 fi
+setenforce 0
+sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config
 
 chmod 754 /usr/lib/systemd/system/shadowsocks.service
 systemctl enable shadowsocks
