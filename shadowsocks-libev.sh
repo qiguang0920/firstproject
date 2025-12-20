@@ -1,34 +1,54 @@
 #!/bin/sh
+[ $(id -u) != "0" ] && { echo -e "\033[31mError: You must be root to run this script\033[0m"; exit 1; } 
+[ ! -e '/etc/redhat-release' ] && { echo -e "\033[31mError: Your operating system cannot use this script.\033[0m"; exit 1; } 
 echo "1. Install shadowsocks-libev"
 echo "2. Install BBR"
 read -p "Please choose what you want to do: " i
 case "$i" in
 	1)
-	
-yum install git vim wget -y
-yum install epel-release -y
-yum install gcc gettext autoconf libtool automake make pcre-devel asciidoc xmlto c-ares-devel libev-devel libsodium-devel mbedtls-devel -y
-yum --enablerepo=epel install mbedtls* libsodium* --skip-broken -y
+os_version_id=`awk -F= '/^VERSION_ID/{print $2}' /etc/os-release | awk -F'"' '{print $2}'| awk -F'.' '{print $1}'`
+pwd=`pwd`
+os_name=`awk -F= '/^NAME/{print $2}' /etc/os-release | awk -F'"' '{print $2}'`
 
+if [ "$os_name" = "CentOS Stream" ];then
+rpm -ivh https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
+fi
+
+yum install epel-release -y
 [ ! -e '/usr/bin/curl' ] && yum -y install curl
 ip=`ip addr |grep "inet"|grep -v "127.0.0.1"|grep -v "inet6" |cut -d: -f2|awk '{print $2}'|awk -F '/' '{print $1}'`
 ip2=`curl ipv4.icanhazip.com`
+
+if [ "$os_version_id" = "7" ] || [ "$os_version_id" = "8" ] || [ "$os_version_id" = "6" ];then
+yum install git -y
+yum install gcc gettext autoconf libtool automake make pcre-devel asciidoc xmlto c-ares-devel libev-devel libsodium-devel mbedtls-devel -y
+yum --enablerepo=epel install mbedtls* libsodium* --skip-broken -y
 git clone https://github.com/shadowsocks/shadowsocks-libev.git
+#下载是否完成
+if [ ! -e "$pwd/shadowsocks-libev" ]; then echo "Download shadowsocks-libev From Github failed"; exit 1; fi
 cd shadowsocks-libev
 git submodule update --init --recursive
 ./autogen.sh && ./configure --prefix=/usr && make
 make install
 yum install zlib-devel openssl-devel -y
 git clone https://github.com/shadowsocks/simple-obfs.git
+#下载是否完成
+if [ ! -e "$pwd/shadowsocks-libev/simple-obfs" ]; then echo "Download simple-obfs From Github failed"; exit 1; fi
 cd simple-obfs
 git submodule update --init --recursive
 ./autogen.sh
 ./configure && make
 make install
+else
+dnf install -y snapd
+systemctl start snapd
+systemctl enable snapd
+snap install core
+snap install shadowsocks-libev
+fi
 
 PORT1="10000"
 PWD1="botonet123"
-
 
 while :; do echo
     read -p "Please input a port you will be use: " PORT1 
@@ -42,6 +62,8 @@ done
 
 mkdir -p /etc/shadowsocks-libev
 touch /etc/shadowsocks-libev/config.json
+
+if [ "$os_version_id" = "7" ] || [ "$os_version_id" = "8" ] || [ "$os_version_id" = "6" ];then
         cat > /etc/shadowsocks-libev/config.json << EOF
 {
 "server":"0.0.0.0",
@@ -56,7 +78,6 @@ touch /etc/shadowsocks-libev/config.json
 	"plugin_opts":"obfs=tls"
 }
 EOF
-
 touch /usr/lib/systemd/system/shadowsocks.service
 	cat > /usr/lib/systemd/system/shadowsocks.service <<EOF
 [Unit]
@@ -69,6 +90,35 @@ Restart=on-abort
 WantedBy=multi-user.target
 EOF
 
+else
+  cat > /var/snap/shadowsocks-libev/common/server-config.json << EOF
+{
+"server":"0.0.0.0",
+	"server_port":$PORT1,
+	"local_port":1080,
+	"password":"$PWD1",
+	"timeout":60,
+	"method":"aes-256-gcm"
+}
+EOF
+touch /etc/systemd/system/shadowsocks.service
+	cat > /etc/systemd/system/shadowsocks.service <<EOF
+[Unit]
+  Description=Shadowsocks-Libev Server
+  After=network-online.target
+    
+[Service]
+  Type=simple
+  ExecStart=/usr/bin/snap run shadowsocks-libev.ss-server -c /var/snap/shadowsocks-libev/common/server-config.json
+  Restart=always
+  RestartSec=2
+    
+[Install]
+ WantedBy=multi-user.target
+EOF
+
+fi
+
 chmod 754 /usr/lib/systemd/system/shadowsocks.service
 systemctl enable shadowsocks
 systemctl start shadowsocks
@@ -76,8 +126,8 @@ systemctl start shadowsocks
 firewall-cmd --add-port=$PORT1/tcp --permanent
 firewall-cmd --add-port=$PORT1/udp --permanent
 firewall-cmd --reload
-cd ..
-rm -rf ./shadowsocks-libev
+cd $pwd
+rm -rf ./shadowsocks-libev snap
 echo -e "Now you can connect to your Shadowsocks via your external IP \033[32m${ip2}\033[0m"
 echo -e "Port: \033[32m${PORT1}\033[0m" "Password: \033[32m${PWD1}\033[0m"
 echo -e "Local_port: \033[32m 1080\033[0m"
