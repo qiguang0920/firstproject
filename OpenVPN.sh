@@ -81,9 +81,17 @@ fi
 [ ! -e '/usr/bin/curl' ] && yum -y install curl
 SERVER_IP=`ip addr |grep "inet"|grep -v "127.0.0.1"|grep -v "inet6" |cut -d: -f2|awk '{print $2}'|cut -d/ -f1|awk '{print $1}'`
 VPN_IP=`curl ipv4.icanhazip.com`
-echo "net.ipv4.ip_forward=1" > /etc/sysctl.conf
-#sed -i '/net.ipv4.ip_forward/s/0/1/' /etc/sysctl.conf
+
+setenforce 0
+sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config
+echo "1" > /proc/sys/net/ipv4/ip_forward
+sed -i 's/net.ipv4.ip_forward = 0/net.ipv4.ip_forward = 1/g' /etc/sysctl.conf
+if ! grep "net.ipv4.ip_forward = 1" /etc/sysctl.conf >>/dev/null
+then
+echo 'net.ipv4.ip_forward = 1' >> /etc/sysctl.conf
+fi
 sysctl -p /etc/sysctl.conf
+
 yum -y install openvpn openssl ca-certificates tar
 #download files
 mkdir -p /etc/openvpn/easy-rsa/
@@ -217,8 +225,6 @@ firewall-cmd --permanent --add-masquerade
 firewall-cmd --permanent --add-rich-rule='rule family=ipv4 source address=10.8.0.0/24 masquerade'
 firewall-cmd --reload
 
-setenforce 0
-sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config
 chmod +x /etc/openvpn/checkpsw.sh
 chmod 777 /etc/openvpn/psw-file
 
