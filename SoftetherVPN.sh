@@ -12,6 +12,7 @@ printf "
 #            More information http://www.iewb.net                     #
 #######################################################################
 "
+pwd=`pwd`
 echo "1. Install Softether VPN Server"
 echo "2. Install Softether VPN Client"
 read -p "Please choose what you want to do: " i
@@ -32,8 +33,8 @@ Description=SoftEther Server
 After=network.target
 [Service]
 Type=forking
-ExecStart=/root/vpnserver/vpnserver start
-ExecStop= /root/vpnserver/vpnserver stop
+ExecStart=$pwd/vpnserver/vpnserver start
+ExecStop= $pwd/vpnserver/vpnserver stop
 [Install]
 WantedBy=multi-user.target
 EOF
@@ -47,7 +48,7 @@ then
 echo 'net.ipv4.ip_forward = 1' >> /etc/sysctl.conf
 fi
 sysctl -p /etc/sysctl.conf
-rm -rf softether.tar.gz 
+rm -rf $pwd/softether.tar.gz 
 
 chmod 754 /usr/lib/systemd/system/vpnserver.service
 systemctl enable vpnserver
@@ -80,13 +81,13 @@ Description=SoftEther Client
 After=network.target
 [Service]
 Type=forking
-ExecStart=/root/vpnclient/vpnclient start
-ExecStop= /root/vpnclient/vpnclient stop
+ExecStart=$pwd/vpnclient/vpnclient start
+ExecStop= $pwd/vpnclient/vpnclient stop
 [Install]
 WantedBy=multi-user.target
 EOF
 
-rm -rf vpnclient.tar.gz
+rm -rf $pwd/vpnclient.tar.gz
 chmod 754 /usr/lib/systemd/system/vpnclient.service
 systemctl enable vpnclient
 systemctl start vpnclient
