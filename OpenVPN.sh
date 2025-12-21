@@ -12,7 +12,6 @@ printf "
 #            More information http://www.iewb.net                     #
 #######################################################################
 "
-os_version_id=`awk -F= '/^VERSION_ID/{print $2}' /etc/os-release | awk -F'"' '{print $2}'`
 echo "1. Install OpenVPN Server"
 echo "2. Add OpenVPN Client"
 echo "3. Uninstall OpenVPN Server"
@@ -71,12 +70,14 @@ while :; do echo
     read -t 20 -p "Please input Client Configuration Name: " Client_Name
 	Client_Name=${Client_Name:-Client}
     [ -n "$Client_Name" ] && break
-done	
+done
+	
 [ ! -e '/etc/yum.repos.d/epel.repo' ] && yum -y install epel-release
 os_name=`awk -F= '/^NAME/{print $2}' /etc/os-release | awk -F'"' '{print $2}'`
 if [ "$os_name" = "CentOS Stream" ];then
 rpm -ivh https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
 fi
+
 [ ! -e '/usr/bin/wget' ] && yum -y install wget
 [ ! -e '/usr/bin/curl' ] && yum -y install curl
 SERVER_IP=`ip addr |grep "inet"|grep -v "127.0.0.1"|grep -v "inet6" |cut -d: -f2|awk '{print $2}'|cut -d/ -f1|awk '{print $1}'`
