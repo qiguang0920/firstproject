@@ -74,8 +74,9 @@ done
 	
 [ ! -e '/etc/yum.repos.d/epel.repo' ] && yum -y install epel-release
 os_name=`awk -F= '/^NAME/{print $2}' /etc/os-release | awk -F'"' '{print $2}'`
+os_version_id=`awk -F= '/^VERSION_ID/{print $2}' /etc/os-release | awk -F'"' '{print $2}'`
 if [ "$os_name" = "CentOS Stream" ];then
-rpm -ivh https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
+dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-$os_version_id.noarch.rpm
 fi
 
 [ ! -e '/usr/bin/wget' ] && yum -y install wget
