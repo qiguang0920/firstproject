@@ -13,7 +13,8 @@ printf "
 #######################################################################
 "
 pwd=`pwd`
-wget https://github.com/fatedier/frp/releases/download/v0.65.0/frp_0.65.0_linux_amd64.tar.gz 
+wget https://github.com/fatedier/frp/releases/download/v0.65.0/frp_0.65.0_linux_amd64.tar.gz
+yum install tar -y 
 tar -zxvf frp_0.65.0_linux_amd64.tar.gz 
 #下载是否完成
 if [ ! -e "$pwd/frp_0.65.0_linux_amd64/frps" ]; then echo "Download frp From Github failed"; exit 1; fi
