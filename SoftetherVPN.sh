@@ -20,6 +20,7 @@ case "$i" in
 	1)
 [ ! -e '/usr/bin/wget' ] && yum -y install wget
 wget -O softether.tar.gz https://github.com/SoftEtherVPN/SoftEtherVPN_Stable/releases/download/v4.44-9807-rtm/softether-vpnserver-v4.44-9807-rtm-2025.04.16-linux-x64-64bit.tar.gz
+yum -y install tar
 tar -zxvf softether.tar.gz
 #下载是否完成
 if [ ! -e "./vpnserver" ]; then echo "Download softether-vpnserver From Github failed"; exit 1; fi
