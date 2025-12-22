@@ -11,11 +11,11 @@ os_version_id2=`awk -F= '/^VERSION_ID/{print $2}' /etc/os-release | awk -F'"' '{
 pwd=`pwd`
 os_name=`awk -F= '/^NAME/{print $2}' /etc/os-release | awk -F'"' '{print $2}'`
 
+yum install epel-release -y
 if [ "$os_name" = "CentOS Stream" ];then
 dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-$os_version_id2.noarch.rpm
 fi
 
-yum install epel-release -y
 [ ! -e '/usr/bin/curl' ] && yum -y install curl
 ip=`ip addr |grep "inet"|grep -v "127.0.0.1"|grep -v "inet6" |cut -d: -f2|awk '{print $2}'|awk -F '/' '{print $1}'`
 ip2=`curl ipv4.icanhazip.com`
