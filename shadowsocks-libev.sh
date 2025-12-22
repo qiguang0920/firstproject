@@ -7,11 +7,12 @@ read -p "Please choose what you want to do: " i
 case "$i" in
 	1)
 os_version_id=`awk -F= '/^VERSION_ID/{print $2}' /etc/os-release | awk -F'"' '{print $2}'| awk -F'.' '{print $1}'`
+os_version_id2=`awk -F= '/^VERSION_ID/{print $2}' /etc/os-release | awk -F'"' '{print $2}'`
 pwd=`pwd`
 os_name=`awk -F= '/^NAME/{print $2}' /etc/os-release | awk -F'"' '{print $2}'`
 
 if [ "$os_name" = "CentOS Stream" ];then
-rpm -ivh https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
+dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-$os_version_id2.noarch.rpm
 fi
 
 yum install epel-release -y
