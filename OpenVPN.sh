@@ -100,7 +100,7 @@ mkdir -p /etc/openvpn/easy-rsa/
 wget -O easyrsa.tgz https://github.com/OpenVPN/easy-rsa/releases/download/v3.2.0/EasyRSA-3.2.0.tgz && tar -zxvf easyrsa.tgz  && mv ./EasyRSA-3.2.0/* /etc/openvpn/easy-rsa/ && rm -rf ./EasyRSA-3.2.0 easyrsa.tgz &&
 #下载是否完成
 if [ ! -e "/etc/openvpn/easy-rsa/easyrsa" ]; then echo "Download EasyRSA From Github failed"; exit 1; fi
-wget -O /etc/openvpn/checkpsw.sh https://raw.githubusercontent.com/qiguang0920/openvpn/master/data/checkpsw.sh
+wget -O /etc/openvpn/checkpsw.sh https://github.com/plutosherry/OpenVPN-Server/raw/master/checkpsw.sh
 if [ ! -e "/etc/openvpn/checkpsw.sh" ]; then echo "Download checkpsw.sh From Github failed"; exit 1; fi
 touch /etc/openvpn/psw-file
 
