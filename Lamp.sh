@@ -24,11 +24,10 @@ echo "2. Add/Del a domain"
 read -p "Please choose what you want to do: " i
 case "$i" in
 	1)
-dbpasswd="admin888"
 public_dir="/Data/Public_Root"
-domain="test.com"
+
 while :; do echo
-    read -t 20 -p "Please input your domain,if haven't,input [test.com]: " domain
+    read -t 25 -p "Please enter your domain name or press Enter: " domain
 	domain=${domain:-test.com}
 	    [ -n "$domain" ] && break
 done
@@ -40,7 +39,7 @@ while :; do echo
 	echo "4. PHP8.1"
 	echo "5. PHP8.2"
 	echo "6. PHP8.3"
-	read -t 20 -p "Please choose the PHP version :" v	
+	read -t 25 -p "Please choose the PHP version :" v	
 	case "$v" in
 	1)
 	php_version=54
@@ -74,7 +73,7 @@ while :; do echo
 	echo "2. MariaDB 11.8"
 	echo "3. MariaDB 11.rc"
 	echo "4. MariaDB 12.rc"	
-	read -t 20 -p "Please choose the MariaDB version :" v1	
+	read -t 25 -p "Please choose the MariaDB version :" v1	
 	case "$v1" in
 	1)
 	MariaDB_version=10.11
