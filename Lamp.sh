@@ -1,7 +1,7 @@
 #!/bin/bash
 # Check if user is root
 [ $(id -u) != "0" ] && { echo -e "\033[31mError: This script must be run as root!\033[0m"; exit 1; } 
-[ ! -e '/etc/redhat-release' ] && { echo -e "\033[31mError: Your operating system cannot use this script.\033[0m"; exit 1; } 
+[ ! -e '/etc/redhat-release' ] && { echo -e "\033[31mError: This script is not supported on your system.\033[0m"; exit 1; } 
 export PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 clear
 printf "
