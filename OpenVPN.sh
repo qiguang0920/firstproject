@@ -16,7 +16,7 @@ echo "1. Install OpenVPN Server"
 echo "2. Add OpenVPN Client"
 echo "3. Uninstall OpenVPN Server"
 echo "4. Revoke OpenVPN Client"
-read -p "Please choose what you want to do: " i
+read -p "Please select the option you require: " i
 case "$i" in
 	1)
 Port="1194"
@@ -26,7 +26,7 @@ global="yes"
 while :; do echo
 	echo "1. udp"
 	echo "2. tcp"
-	read -t 20 -p "Please choose the protocol :" v	
+	read -t 20 -p "OpenVPN use UDP or TCP protocol?:" v
 	case "$v" in
 	1)
 	protocol=udp
@@ -35,7 +35,7 @@ while :; do echo
 	protocol=tcp
 	;;
 	*)
-	 echo "your choice is not 1-2, protocol will be default udp"
+	 echo "Your choice is not 1-2, protocol will be default udp"
 	 protocol=${protocol:-udp}
 	;;	 
 esac	
@@ -45,7 +45,7 @@ done
 while :; do echo
 	echo "1. yes"
 	echo "2. no"
-	read -t 20 -p "Whether to enable global proxy? :" v	
+	read -t 20 -p "Enable global proxy? :" v
 	case "$v" in
 	1)
 	global=yes
@@ -54,7 +54,7 @@ while :; do echo
 	global=no
 	;;
 	*)
-	 echo "your choice is not 1-2, default yes"
+	 echo "Your choice is not 1-2, default yes"
 	 global=${global:-yes}
 	;;	 
 esac	
@@ -62,12 +62,12 @@ esac
 done
 
 while :; do echo
-    read -t 20 -p "Please input VPN Server Port: " Port
+    read -t 20 -p "OpenVPN Server Port: " Port
 	Port=${Port:-1194}
     [ -n "$Port" ] && break
 done
 while :; do echo
-    read -t 20 -p "Please input Client Configuration Name: " Client_Name
+    read -t 20 -p "Client Configuration Name: " Client_Name
 	Client_Name=${Client_Name:-Client}
     [ -n "$Client_Name" ] && break
 done
@@ -97,7 +97,7 @@ sysctl -p /etc/sysctl.conf
 yum -y install openvpn openssl ca-certificates tar
 #download files
 mkdir -p /etc/openvpn/easy-rsa/
-wget -O easyrsa.tgz https://github.com/OpenVPN/easy-rsa/releases/download/v3.2.0/EasyRSA-3.2.0.tgz && tar -zxvf easyrsa.tgz  && mv ./EasyRSA-3.2.0/* /etc/openvpn/easy-rsa/ && rm -rf ./EasyRSA-3.2.0 easyrsa.tgz &&
+wget -O easyrsa.tgz https://github.com/OpenVPN/easy-rsa/releases/download/v3.2.5/EasyRSA-3.2.5.tgz && tar -zxvf easyrsa.tgz && mv ./EasyRSA-3.2.5/* /etc/openvpn/easy-rsa/ && rm -rf ./EasyRSA-3.2.5 easyrsa.tgz &&
 #下载是否完成
 if [ ! -e "/etc/openvpn/easy-rsa/easyrsa" ]; then echo "Download EasyRSA From Github failed"; exit 1; fi
 wget -O /etc/openvpn/checkpsw.sh https://github.com/plutosherry/OpenVPN-Server/raw/master/checkpsw.sh
