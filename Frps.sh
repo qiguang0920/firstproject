@@ -47,12 +47,14 @@ cat > $pwd/Frp_server/frps.ini <<EOF
 [common]
 # frp 监听地址
 bind_port = 7000
+bind_udp_port = 7001
 #frp 控制面板
 dashboard_port = 7500
 # dashboard 用户名密码可选，默认都为 admin
 dashboard_user = $dashboard_user
 dashboard_pwd = $dashboard_pwd
-token= $token
+privilege_mode = true
+privilege_token= $token
 EOF
 
 setenforce 0
@@ -66,6 +68,7 @@ fi
 sysctl -p /etc/sysctl.conf
 
 firewall-cmd --add-port=7000/tcp --permanent
+firewall-cmd --add-port=7001/udp --permanent
 firewall-cmd --add-port=7500/tcp --permanent
 #firewall-cmd --add-port=31400-31409/tcp --permanent
 firewall-cmd --reload
