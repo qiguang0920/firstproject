@@ -84,5 +84,5 @@ echo "@reboot sleep 10; /home/frp.sh" >>/var/spool/cron/root
 /bin/bash /home/frp.sh
 clear
 echo -e "Dashboard_user: \033[32m${dashboard_user}\033[0m" "Dashboard Password: \033[32m${dashboard_pwd}\033[0m"
-echo -e "token: \033[32m${token}\033[0m"
+echo -e "privilege_token: \033[32m${token}\033[0m"
 #reboot
