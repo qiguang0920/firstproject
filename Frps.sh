@@ -29,7 +29,6 @@ if [ ! -e "$pwd/frp_0.65.0_linux_amd64/frps" ]; then echo "Download frp From Git
 mv frp_0.65.0_linux_amd64 Frp_server
 rm -rf frp_0.65.0_linux_amd64.tar.gz
 
-token="IEWB.NET_$RANDOM"
 while :; do echo
     read -t 20 -p "Please input dashboard username: " dashboard_user
 	dashboard_user=${dashboard_user:-admin}
@@ -40,6 +39,12 @@ while :; do echo
     read -t 20 -p "Please input dashboard password: " dashboard_pwd
 	dashboard_pwd=${dashboard_pwd:-admin}
     [ -n "$dashboard_pwd" ] && break
+done
+
+while :; do echo
+    read -t 20 -p "Please input privilege token: " privilege_token
+	privilege_token=${privilege_token:-IEWB.NET_$RANDOM}
+    [ -n "$privilege_token" ] && break
 done
 
 cat > $pwd/Frp_server/frps.ini <<EOF
@@ -54,7 +59,7 @@ dashboard_port = 7500
 dashboard_user = $dashboard_user
 dashboard_pwd = $dashboard_pwd
 privilege_mode = true
-privilege_token= $token
+privilege_token= $privilege_token
 EOF
 
 setenforce 0
@@ -84,5 +89,5 @@ echo "@reboot sleep 10; /home/frp.sh" >>/var/spool/cron/root
 /bin/bash /home/frp.sh
 clear
 echo -e "Dashboard_user: \033[32m${dashboard_user}\033[0m" "Dashboard Password: \033[32m${dashboard_pwd}\033[0m"
-echo -e "privilege_token: \033[32m${token}\033[0m"
+echo -e "privilege_token: \033[32m${privilege_token}\033[0m"
 #reboot
